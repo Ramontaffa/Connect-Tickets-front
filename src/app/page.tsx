@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CalendarDays, Shield, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -92,18 +93,19 @@ export default function Home() {
 
               <Button
                 type="submit"
+                size="lg"
                 className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800"
               >
                 Entrar
               </Button>
 
-              <div className="mt-4 text-center">
-                <button
-                  type="button"
-                  className="text-sm cursor-pointer text-gray-600 hover:text-gray-900"
+              <div className="mt-2 text-center">
+                <Link
+                  href="/esqueci-senha"
+                  className="text-sm text-gray-600 hover:text-gray-900"
                 >
                   Esqueceu a senha?
-                </button>
+                </Link>
               </div>
             </form>
           </CardContent>
