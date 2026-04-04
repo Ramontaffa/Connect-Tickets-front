@@ -1,7 +1,9 @@
 "use client";
 
+import { type FormEvent } from "react";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +11,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function EsqueciSenha() {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+
+    if (!email) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Digite um email válido");
+      return;
+    }
+
+    // TODO: integrar com API de recuperação de senha
+    toast.success("Link de recuperação enviado para seu email");
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
@@ -33,7 +54,7 @@ export default function EsqueciSenha() {
               </p>
             </div>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <Label
                   htmlFor="email"
@@ -43,6 +64,7 @@ export default function EsqueciSenha() {
                 </Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="seu@email.com"
                   autoComplete="email"

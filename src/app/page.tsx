@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Shield, User } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +14,31 @@ type Tab = "user" | "admin";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("user");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Digite um email válido");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+
+    // TODO: integrar com API de login
+    toast.info("Realizando login...");
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -29,7 +55,7 @@ export default function Home() {
 
         <Card className="rounded-2xl border-none py-0 shadow-lg ring-0">
           <CardContent className="p-6">
-            <div className="mb-6 grid w-full grid-cols-2 rounded-xl bg-muted p-0.75">
+            <div className="mb-8 grid w-full grid-cols-2 rounded-xl bg-muted p-0.75">
               <button
                 type="button"
                 onClick={() => setActiveTab("user")}
@@ -56,7 +82,7 @@ export default function Home() {
               </button>
             </div>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <Label
                   htmlFor={`${activeTab}-email`}
@@ -67,6 +93,7 @@ export default function Home() {
                 <Input
                   key={`${activeTab}-email`}
                   id={`${activeTab}-email`}
+                  name="email"
                   type="email"
                   placeholder={`${activeTab}@email.com`}
                   autoComplete="email"
@@ -84,6 +111,7 @@ export default function Home() {
                 <Input
                   key={`${activeTab}-password`}
                   id={`${activeTab}-password`}
+                  name="password"
                   type="password"
                   placeholder="••••••••"
                   autoComplete="current-password"
@@ -94,7 +122,7 @@ export default function Home() {
               <Button
                 type="submit"
                 size="lg"
-                className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800"
+                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800"
               >
                 Entrar
               </Button>
