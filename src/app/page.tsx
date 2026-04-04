@@ -2,7 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
-import { CalendarDays, Shield, User } from "lucide-react";
+import { CalendarDays, Loader2, Shield, User } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,9 @@ type Tab = "user" | "admin";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("user");
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -37,7 +38,12 @@ export default function Home() {
     }
 
     // TODO: integrar com API de login
-    toast.info("Realizando login...");
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -122,9 +128,17 @@ export default function Home() {
               <Button
                 type="submit"
                 size="lg"
-                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800"
+                disabled={isLoading}
+                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-70"
               >
-                Entrar
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Entrando...
+                  </>
+                ) : (
+                  "Entrar"
+                )}
               </Button>
 
               <div className="mt-2 text-center">
@@ -133,6 +147,18 @@ export default function Home() {
                   className="text-sm text-gray-600 hover:text-gray-900"
                 >
                   Esqueceu a senha?
+                </Link>
+              </div>
+
+              <div className="text-center">
+                <span className="text-sm text-gray-500">
+                  Não tem uma conta?{" "}
+                </span>
+                <Link
+                  href="/cadastro"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                >
+                  Criar conta
                 </Link>
               </div>
             </form>
