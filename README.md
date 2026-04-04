@@ -21,6 +21,8 @@ src/
     globals.css           # Estilos globais + Tailwind
     esqueci-senha/
       page.tsx            # Pagina de recuperacao de senha
+    cadastro/
+      page.tsx            # Pagina de cadastro de usuario
   components/
     ui/                   # Componentes Shadcn/UI (Button, Card, Input, Label, etc.)
   lib/
@@ -68,7 +70,8 @@ pnpm start
 | Rota             | Descricao                                      |
 | ---------------- | ---------------------------------------------- |
 | `/`              | Login com abas Usuario/Admin                   |
-| `/esqueci-senha` | Recuperacao de senha via email                 |
+| `/cadastro`      | Cadastro de novo usuario                       |
+| `/esqueci-senha` | Recuperacao de senha via email                  |
 
 ## Componentes Shadcn/UI utilizados
 
