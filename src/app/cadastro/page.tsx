@@ -2,7 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
-import { CalendarDays, Eye, EyeOff } from "lucide-react";
+import { CalendarDays, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,9 @@ import { Label } from "@/components/ui/label";
 export default function Cadastro() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = (formData.get("name") as string).trim();
@@ -48,7 +49,12 @@ export default function Cadastro() {
     }
 
     // TODO: integrar com API de cadastro
-    toast.success("Conta criada com sucesso!");
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -129,7 +135,7 @@ export default function Cadastro() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -159,7 +165,7 @@ export default function Cadastro() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -173,9 +179,17 @@ export default function Cadastro() {
               <Button
                 type="submit"
                 size="lg"
-                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800"
+                disabled={isLoading}
+                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-70"
               >
-                Criar conta
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Criando conta...
+                  </>
+                ) : (
+                  "Criar conta"
+                )}
               </Button>
 
               <div className="mt-2 text-center">

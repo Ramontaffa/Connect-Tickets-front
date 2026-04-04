@@ -1,8 +1,8 @@
 "use client";
 
-import { type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import Link from "next/link";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function EsqueciSenha() {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -27,7 +29,12 @@ export default function EsqueciSenha() {
     }
 
     // TODO: integrar com API de recuperação de senha
-    toast.success("Link de recuperação enviado para seu email");
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -75,9 +82,17 @@ export default function EsqueciSenha() {
               <Button
                 type="submit"
                 size="lg"
-                className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800"
+                disabled={isLoading}
+                className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-70"
               >
-                Enviar link
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Enviando...
+                  </>
+                ) : (
+                  "Enviar link"
+                )}
               </Button>
 
               <div className="mt-2 text-center">
