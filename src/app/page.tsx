@@ -26,32 +26,32 @@ export default function Home() {
           <p className="text-gray-600">Plataforma de Gestão de Eventos</p>
         </div>
 
-        <Card className="rounded-2xl border-none shadow-lg ring-0">
-          <CardContent className="p-8">
+        <Card className="rounded-2xl border-none py-0 shadow-lg ring-0">
+          <CardContent className="p-6">
             <div className="mb-6 grid w-full grid-cols-2 rounded-xl bg-muted p-0.75">
               <button
                 type="button"
                 onClick={() => setActiveTab("user")}
-                className={`flex items-center justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
+                className={`flex items-center cursor-pointer justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "user"
                     ? "bg-white text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <User className="h-4 w-4" />
-                <span>Usuário</span>
+                <span className="cursor-pointer">Usuário</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("admin")}
-                className={`flex items-center justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
+                className={`flex items-center cursor-pointer justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "admin"
                     ? "bg-white text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Shield className="h-4 w-4" />
-                <span>Admin</span>
+                <span className="cursor-pointer">Admin</span>
               </button>
             </div>
 
@@ -100,7 +100,7 @@ export default function Home() {
               <div className="mt-4 text-center">
                 <button
                   type="button"
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  className="text-sm cursor-pointer text-gray-600 hover:text-gray-900"
                 >
                   Esqueceu a senha?
                 </button>
