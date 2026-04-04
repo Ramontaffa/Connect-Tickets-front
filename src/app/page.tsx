@@ -26,8 +26,8 @@ export default function Home() {
           <p className="text-gray-600">Plataforma de Gestão de Eventos</p>
         </div>
 
-        <Card className="rounded-xl border-0 shadow-lg">
-          <CardContent className="p-6">
+        <Card className="rounded-2xl border-none shadow-lg ring-0">
+          <CardContent className="p-8">
             <div className="mb-6 grid w-full grid-cols-2 rounded-xl bg-muted p-0.75">
               <button
                 type="button"
@@ -69,7 +69,7 @@ export default function Home() {
                   type="email"
                   placeholder={`${activeTab}@email.com`}
                   autoComplete="email"
-                  className="mt-1.5"
+                  className="mt-1.5 border-0 bg-gray-100"
                 />
               </div>
 
@@ -86,13 +86,13 @@ export default function Home() {
                   type="password"
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className="mt-1.5"
+                  className="mt-1.5 border-0 bg-gray-100"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="mt-6 w-full bg-gray-900 text-white hover:bg-gray-800"
+                className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800"
               >
                 Entrar
               </Button>
