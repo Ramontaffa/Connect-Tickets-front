@@ -135,6 +135,18 @@ export default function Home() {
                   Esqueceu a senha?
                 </Link>
               </div>
+
+              <div className="text-center">
+                <span className="text-sm text-gray-500">
+                  Não tem uma conta?{" "}
+                </span>
+                <Link
+                  href="/cadastro"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                >
+                  Criar conta
+                </Link>
+              </div>
             </form>
           </CardContent>
         </Card>
