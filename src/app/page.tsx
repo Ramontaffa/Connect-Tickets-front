@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CalendarDays, Loader2, Shield, User } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,11 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getRegisteredAccount, isRegisteredCredentialValid } from "@/lib/auth-storage";
 import { arenaTheme } from "@/lib/arena-theme";
 
 type Tab = "user" | "admin";
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("user");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,10 +41,25 @@ export default function Home() {
       return;
     }
 
-    // TODO: integrar com API de login
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 900));
+
+      const registeredAccount = getRegisteredAccount();
+      if (!registeredAccount) {
+        toast.error("Nenhum cadastro autorizado foi encontrado. Crie uma conta primeiro.");
+        return;
+      }
+
+      const loginResult = isRegisteredCredentialValid(email, password);
+      if (!loginResult.valid || !loginResult.account) {
+        toast.error("Este login não é o cadastro autorizado.");
+        return;
+      }
+
+      const firstName = loginResult.account.name.trim().split(" ")[0];
+      toast.success(`Bem-vindo, ${firstName}!`);
+      router.push("/home");
     } finally {
       setIsLoading(false);
     }

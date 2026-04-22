@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { arenaTheme } from "@/lib/arena-theme";
 
 export default function EsqueciSenha() {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,25 +39,28 @@ export default function EsqueciSenha() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+    <main className={arenaTheme.page + " relative flex min-h-screen items-center justify-center overflow-hidden p-4"}>
+      <div className="pointer-events-none absolute left-1/4 top-10 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-10 right-1/4 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-[100px]" />
+
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900">
-            <CalendarDays className="h-9 w-9 text-white" />
+          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-arena-border bg-arena-surface-strong">
+            <CalendarDays className="h-8 w-8 text-violet-400" />
           </div>
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-black tracking-tight text-white">
             Arena Pernambuco
           </h1>
-          <p className="text-gray-600">Plataforma de Gestão de Eventos</p>
+          <p className={arenaTheme.mutedText}>Plataforma de Gestão de Eventos</p>
         </div>
 
-        <Card className="rounded-2xl border-none py-0 shadow-lg ring-0">
+        <Card className={arenaTheme.glassCard + " rounded-3xl py-0 shadow-none backdrop-blur-sm"}>
           <CardContent className="p-6">
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-white">
                 Recuperar senha
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-white/60">
                 Digite seu email para receber o link de recuperação de senha.
               </p>
             </div>
@@ -65,7 +69,7 @@ export default function EsqueciSenha() {
               <div>
                 <Label
                   htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-white/80"
                 >
                   Email
                 </Label>
@@ -75,7 +79,7 @@ export default function EsqueciSenha() {
                   type="email"
                   placeholder="seu@email.com"
                   autoComplete="email"
-                  className="mt-1.5 border-0 bg-gray-100"
+                  className={arenaTheme.input + " mt-1.5 h-11 py-2"}
                 />
               </div>
 
@@ -83,7 +87,7 @@ export default function EsqueciSenha() {
                 type="submit"
                 size="lg"
                 disabled={isLoading}
-                className="mt-6 w-full rounded-xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-70"
+                className={arenaTheme.primaryButton + " mt-6 h-12 w-full rounded-xl px-0 disabled:opacity-70"}
               >
                 {isLoading ? (
                   <>
@@ -98,7 +102,7 @@ export default function EsqueciSenha() {
               <div className="mt-2 text-center">
                 <Link
                   href="/"
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  className="text-sm text-white/60 hover:text-white"
                 >
                   Voltar para o login
                 </Link>
@@ -108,7 +112,7 @@ export default function EsqueciSenha() {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-white/40">
             © 2026 Arena Pernambuco. Todos os direitos reservados.
           </p>
         </div>
