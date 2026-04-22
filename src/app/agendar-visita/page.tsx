@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { MapPin, Calendar, Clock, Users, CheckCircle, ArrowLeft, Phone, Mail, MessageCircle, Info } from "lucide-react";
 
-import { ArenaTopNav } from "@/components/arena/arena-top-nav";
+import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { arenaTheme } from "@/lib/arena-theme";
 
 const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
@@ -23,14 +23,13 @@ export default function AgendarVisitaPage() {
   };
 
   return (
-    <div className={arenaTheme.page}>
-      <ArenaTopNav active="agendar-visita" />
-
-      {/* Background glow */}
-      <div className="fixed top-0 right-0 h-125 w-125 rounded-full bg-violet-600/10 blur-[150px] pointer-events-none" />
-
-      <div className={arenaTheme.pageContent}>
-        <div className="mx-auto w-full max-w-3xl">
+    <ArenaPageLayout
+      active="agendar-visita"
+      containerClassName="max-w-3xl"
+      topDecoration={
+        <div className="fixed top-0 right-0 h-125 w-125 rounded-full bg-violet-600/10 blur-[150px] pointer-events-none" />
+      }
+    >
 
           {/* BACK */}
           <Link href="/home" className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white/70 transition-colors mb-8">
@@ -216,8 +215,6 @@ export default function AgendarVisitaPage() {
               </Link>
             </div>
           )}
-        </div>
-      </div>
-    </div>
+    </ArenaPageLayout>
   );
 }

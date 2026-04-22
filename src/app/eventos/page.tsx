@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Clock, Users, SlidersHorizontal, ArrowRight, Search } from "lucide-react";
 
-import { ArenaTopNav } from "@/components/arena/arena-top-nav";
+import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { arenaTheme } from "@/lib/arena-theme";
 
 const ALL_EVENTS = [
@@ -103,11 +103,7 @@ export default function EventosPage() {
     });
 
   return (
-    <div className={arenaTheme.page}>
-      <ArenaTopNav active="eventos" />
-
-      <div className={arenaTheme.pageContent}>
-        <div className={arenaTheme.container}>
+    <ArenaPageLayout active="eventos">
 
           {/* HEADER */}
           <div className="mb-10">
@@ -240,8 +236,6 @@ export default function EventosPage() {
               <p className="text-white/30 text-sm">Nenhum evento encontrado para os filtros selecionados.</p>
             </div>
           )}
-        </div>
-      </div>
-    </div>
+    </ArenaPageLayout>
   );
 }

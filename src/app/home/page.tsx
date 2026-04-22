@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CalendarDays, Users, TrendingUp, MapPin, ArrowRight, Clock } from "lucide-react";
 
-import { ArenaTopNav } from "@/components/arena/arena-top-nav";
+import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { arenaTheme } from "@/lib/arena-theme";
 
 const stats = [
@@ -51,8 +51,11 @@ const events = [
 
 export default function HomePage() {
   return (
-    <div className={arenaTheme.page + " font-sans"}>
-      <ArenaTopNav active="home" />
+    <ArenaPageLayout
+      active="home"
+      contentClassName="px-0 pt-0 pb-0"
+      containerClassName="max-w-none p-0"
+    >
 
       {/* HERO */}
       <section className="relative pt-32 pb-24 px-8 overflow-hidden">
@@ -198,6 +201,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </div>
+    </ArenaPageLayout>
   );
 }
