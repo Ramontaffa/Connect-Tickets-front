@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { arenaTheme } from "@/lib/arena-theme";
 
 type Tab = "user" | "admin";
 
@@ -47,28 +48,31 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+    <main className={arenaTheme.page + " relative flex min-h-screen items-center justify-center overflow-hidden p-4"}>
+      <div className="pointer-events-none absolute left-1/4 top-10 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-10 right-1/4 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-[100px]" />
+
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900">
-            <CalendarDays className="h-9 w-9 text-white" />
+          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-arena-border bg-arena-surface-strong">
+            <CalendarDays className="h-8 w-8 text-violet-400" />
           </div>
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-black tracking-tight text-white">
             Arena Pernambuco
           </h1>
-          <p className="text-gray-600">Plataforma de Gestão de Eventos</p>
+          <p className={arenaTheme.mutedText}>Plataforma de Gestão de Eventos</p>
         </div>
 
-        <Card className="rounded-2xl border-none py-0 shadow-lg ring-0">
+        <Card className={arenaTheme.glassCard + " rounded-3xl py-0 shadow-none backdrop-blur-sm"}>
           <CardContent className="p-6">
-            <div className="mb-8 grid w-full grid-cols-2 rounded-xl bg-muted p-0.75">
+            <div className="mb-8 grid w-full grid-cols-2 rounded-xl border border-arena-border bg-arena-surface-strong p-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("user")}
                 className={`flex items-center cursor-pointer justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "user"
-                    ? "bg-white text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-linear-to-r from-arena-brand-start to-arena-brand-end text-white"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
                 <User className="h-4 w-4" />
@@ -79,8 +83,8 @@ export default function Home() {
                 onClick={() => setActiveTab("admin")}
                 className={`flex items-center cursor-pointer justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "admin"
-                    ? "bg-white text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-linear-to-r from-arena-brand-start to-arena-brand-end text-white"
+                    : "text-white/50 hover:text-white"
                 }`}
               >
                 <Shield className="h-4 w-4" />
@@ -92,7 +96,7 @@ export default function Home() {
               <div>
                 <Label
                   htmlFor={`${activeTab}-email`}
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-white/80"
                 >
                   Email
                 </Label>
@@ -103,14 +107,14 @@ export default function Home() {
                   type="email"
                   placeholder={`${activeTab}@email.com`}
                   autoComplete="email"
-                  className="mt-1.5 border-0 bg-gray-100"
+                  className={arenaTheme.input + " mt-1.5 h-11 py-2"}
                 />
               </div>
 
               <div>
                 <Label
                   htmlFor={`${activeTab}-password`}
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-white/80"
                 >
                   Senha
                 </Label>
@@ -121,7 +125,7 @@ export default function Home() {
                   type="password"
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className="mt-1.5 border-0 bg-gray-100"
+                  className={arenaTheme.input + " mt-1.5 h-11 py-2"}
                 />
               </div>
 
@@ -129,7 +133,7 @@ export default function Home() {
                 type="submit"
                 size="lg"
                 disabled={isLoading}
-                className="mt-6 w-full rounded-md bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-70"
+                className={arenaTheme.primaryButton + " mt-6 h-12 w-full rounded-xl px-0 disabled:opacity-70"}
               >
                 {isLoading ? (
                   <>
@@ -144,19 +148,19 @@ export default function Home() {
               <div className="mt-2 text-center">
                 <Link
                   href="/esqueci-senha"
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  className="text-sm text-white/60 hover:text-white"
                 >
                   Esqueceu a senha?
                 </Link>
               </div>
 
               <div className="text-center">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-white/50">
                   Não tem uma conta?{" "}
                 </span>
                 <Link
                   href="/cadastro"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                  className="text-sm font-medium text-violet-300 hover:text-violet-200"
                 >
                   Criar conta
                 </Link>
@@ -166,7 +170,7 @@ export default function Home() {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-white/40">
             © 2026 Arena Pernambuco. Todos os direitos reservados.
           </p>
         </div>
