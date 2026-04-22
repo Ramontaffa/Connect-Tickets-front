@@ -89,10 +89,10 @@ export default function HomePage() {
               Ver Eventos
             </Link>
             <Link
-              href="/sugerir"
+              href="/fale-conosco"
               className={arenaTheme.secondaryButton}
             >
-              Sugerir Evento
+              Fale Conosco
               <ArrowRight size={14} />
             </Link>
           </div>
