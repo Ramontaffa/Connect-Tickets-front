@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Clock, Users, SlidersHorizontal, ArrowRight, Search } from "lucide-react";
 
+import { ArenaTopNav } from "@/components/arena/arena-top-nav";
+import { arenaTheme } from "@/lib/arena-theme";
+
 const ALL_EVENTS = [
   {
     id: 1,
@@ -100,44 +103,17 @@ export default function EventosPage() {
     });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-xs font-bold">AP</div>
-          <span className="font-semibold tracking-tight text-white">Arena Pernambuco</span>
-        </div>
-        <div className="flex items-center gap-1">
-          {[
-            { label: "Início", href: "/home" },
-            { label: "Eventos", href: "/eventos", active: true },
-            { label: "Sugerir", href: "/sugerir" },
-            { label: "Agendar Visita", href: "/agendar-visita" },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                item.active ? "bg-white/10 text-white" : "text-white/50 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link href="/" className="ml-4 px-4 py-2 rounded-lg text-sm font-medium text-white/50 hover:text-white hover:bg-white/5 transition-all">
-            Sair
-          </Link>
-        </div>
-      </nav>
+    <div className={arenaTheme.page}>
+      <ArenaTopNav active="eventos" />
 
-      <div className="pt-28 pb-24 px-8">
-        <div className="max-w-6xl mx-auto">
+      <div className={arenaTheme.pageContent}>
+        <div className={arenaTheme.container}>
 
           {/* HEADER */}
           <div className="mb-10">
             <h1 className="text-5xl font-black tracking-tight mb-2">
               Todos os{" "}
-              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Eventos
               </span>
             </h1>
@@ -154,12 +130,12 @@ export default function EventosPage() {
                 placeholder="Buscar evento..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-violet-500/50 transition-colors"
+                className={"pl-10 " + arenaTheme.input}
               />
             </div>
 
             {/* Category filter */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/8">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/3 border border-white/8">
               <SlidersHorizontal size={13} className="text-white/30 ml-2" />
               {CATEGORIES.map((cat) => (
                 <button
@@ -180,7 +156,7 @@ export default function EventosPage() {
             <select
               value={order}
               onChange={(e) => setOrder(e.target.value)}
-              className="px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500/50 transition-colors appearance-none cursor-pointer"
+              className={arenaTheme.input + " appearance-none cursor-pointer"}
             >
               {ORDER_OPTIONS.map((opt) => (
                 <option key={opt} value={opt} className="bg-[#0a0a0f]">{opt}</option>
@@ -198,7 +174,7 @@ export default function EventosPage() {
             {filtered.map((event) => (
               <div
                 key={event.id}
-                className="group rounded-2xl bg-white/[0.03] border border-white/8 overflow-hidden hover:border-violet-500/30 transition-all hover:-translate-y-1 duration-300"
+                className={arenaTheme.glassCard + " group overflow-hidden hover:border-violet-500/30 transition-all hover:-translate-y-1 duration-300"}
               >
                 <div className="relative h-52 overflow-hidden">
                   <img
@@ -206,7 +182,7 @@ export default function EventosPage() {
                     alt={event.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
                   <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${event.categoryColor}`}>
                     {event.category}
                   </span>
@@ -220,9 +196,9 @@ export default function EventosPage() {
                     <div className="h-1 bg-white/20 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${
-                          event.occupancy >= 90 ? "bg-gradient-to-r from-red-500 to-orange-500" :
-                          event.occupancy >= 75 ? "bg-gradient-to-r from-amber-500 to-yellow-500" :
-                          "bg-gradient-to-r from-violet-500 to-fuchsia-500"
+                          event.occupancy >= 90 ? "bg-linear-to-r from-red-500 to-orange-500" :
+                          event.occupancy >= 75 ? "bg-linear-to-r from-amber-500 to-yellow-500" :
+                          "bg-linear-to-r from-violet-500 to-fuchsia-500"
                         }`}
                         style={{ width: `${event.occupancy}%` }}
                       />
@@ -248,7 +224,7 @@ export default function EventosPage() {
                   </div>
                   <Link
                     href={`/eventos/${event.id}`}
-                    className="flex items-center justify-center gap-2 w-full py-2.5 text-center text-sm font-semibold rounded-xl bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 text-violet-300 hover:from-violet-600 hover:to-fuchsia-600 hover:text-white hover:border-transparent transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 text-center text-sm font-semibold rounded-xl bg-linear-to-r from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 text-violet-300 hover:from-violet-600 hover:to-fuchsia-600 hover:text-white hover:border-transparent transition-all"
                   >
                     Ver Detalhes
                     <ArrowRight size={13} />
