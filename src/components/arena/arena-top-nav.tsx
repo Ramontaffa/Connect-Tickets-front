@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-type NavKey = "home" | "eventos" | "agendar-visita";
+type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
 
 type ArenaTopNavProps = {
   active: NavKey;

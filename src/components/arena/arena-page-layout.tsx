@@ -5,7 +5,7 @@ import { arenaTheme } from "@/lib/arena-theme";
 import { cn } from "@/lib/utils";
 
 type ArenaPageLayoutProps = {
-  active: "home" | "eventos" | "agendar-visita";
+  active: "home" | "eventos" | "fale-conosco" | "agendar-visita";
   children: ReactNode;
   contentClassName?: string;
   containerClassName?: string;
