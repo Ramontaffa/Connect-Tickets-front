@@ -3,24 +3,106 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MapPin, Calendar, Clock, Users, CheckCircle, ArrowLeft, Phone, Mail, MessageCircle, Info } from "lucide-react";
+import { toast } from "sonner";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { arenaTheme } from "@/lib/arena-theme";
 
 const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
 
+type VisitFormData = {
+  date: string;
+  time: string;
+  visitors: string;
+};
+
+type VisitFormErrors = Partial<Record<keyof VisitFormData, string>>;
+
+const initialFormData: VisitFormData = {
+  date: "",
+  time: "",
+  visitors: "",
+};
+
+function getTodayDateString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, "0");
+  const day = `${now.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function isWeekday(dateValue: string) {
+  const date = new Date(`${dateValue}T00:00:00`);
+  const day = date.getDay();
+  return day >= 1 && day <= 5;
+}
+
 export default function AgendarVisitaPage() {
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [visitors, setVisitors] = useState("");
+  const [formData, setFormData] = useState<VisitFormData>(initialFormData);
+  const [errors, setErrors] = useState<VisitFormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (date && time && visitors) {
-      setSubmitted(true);
+  function handleFieldChange(field: keyof VisitFormData, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  };
+  }
+
+  function validateForm(values: VisitFormData): VisitFormErrors {
+    const nextErrors: VisitFormErrors = {};
+    const today = getTodayDateString();
+
+    if (!values.date) {
+      nextErrors.date = "Selecione uma data para a visita.";
+    } else if (values.date < today) {
+      nextErrors.date = "Escolha uma data de hoje em diante.";
+    } else if (!isWeekday(values.date)) {
+      nextErrors.date = "Selecione uma data entre segunda e sexta-feira.";
+    }
+
+    if (!values.time) {
+      nextErrors.time = "Selecione um horário disponível.";
+    }
+
+    if (!values.visitors.trim()) {
+      nextErrors.visitors = "Informe o número de visitantes.";
+    } else {
+      const totalVisitors = Number(values.visitors);
+      if (!Number.isInteger(totalVisitors) || totalVisitors < 1 || totalVisitors > 50) {
+        nextErrors.visitors = "Informe um número entre 1 e 50 visitantes.";
+      }
+    }
+
+    return nextErrors;
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const validationErrors = validateForm(formData);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      toast.error("Preencha os campos obrigatórios e revise os valores informados.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      toast.success("Visita agendada com sucesso!");
+      setSubmitted(true);
+    } catch {
+      toast.error("Não foi possível concluir o agendamento. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <ArenaPageLayout
@@ -54,7 +136,7 @@ export default function AgendarVisitaPage() {
             <div className="space-y-5">
               {/* FORM CARD */}
               <div className={arenaTheme.glassCard + " p-7"}>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
 
                   {/* Date */}
                   <div>
@@ -64,11 +146,13 @@ export default function AgendarVisitaPage() {
                     </label>
                     <input
                       type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      required
+                      value={formData.date}
+                      onChange={(e) => handleFieldChange("date", e.target.value)}
+                      min={getTodayDateString()}
+                      aria-invalid={Boolean(errors.date)}
                       className={arenaTheme.input + " scheme-dark"}
                     />
+                    {errors.date && <p className="mt-1 text-xs text-red-400">{errors.date}</p>}
                     <p className="text-xs text-white/30 mt-1.5">Visitas disponíveis de segunda a sexta-feira</p>
                   </div>
 
@@ -83,9 +167,9 @@ export default function AgendarVisitaPage() {
                         <button
                           key={slot}
                           type="button"
-                          onClick={() => setTime(slot)}
+                          onClick={() => handleFieldChange("time", slot)}
                           className={`py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                            time === slot
+                            formData.time === slot
                               ? "bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20"
                               : "bg-white/3 border-white/10 text-white/50 hover:text-white hover:border-white/20"
                           }`}
@@ -94,6 +178,7 @@ export default function AgendarVisitaPage() {
                         </button>
                       ))}
                     </div>
+                    {errors.time && <p className="mt-1 text-xs text-red-400">{errors.time}</p>}
                   </div>
 
                   {/* Visitors */}
@@ -107,11 +192,12 @@ export default function AgendarVisitaPage() {
                       min={1}
                       max={50}
                       placeholder="Ex: 5"
-                      value={visitors}
-                      onChange={(e) => setVisitors(e.target.value)}
-                      required
+                      value={formData.visitors}
+                      onChange={(e) => handleFieldChange("visitors", e.target.value)}
+                      aria-invalid={Boolean(errors.visitors)}
                       className={arenaTheme.input}
                     />
+                    {errors.visitors && <p className="mt-1 text-xs text-red-400">{errors.visitors}</p>}
                     <p className="text-xs text-white/30 mt-1.5">Grupos de até 50 pessoas</p>
                   </div>
 
@@ -119,10 +205,11 @@ export default function AgendarVisitaPage() {
                   <div className="flex gap-3 pt-2">
                     <button
                       type="submit"
+                      disabled={isSubmitting}
                       className={arenaTheme.primaryButton + " flex-1 py-3.5 px-0"}
                     >
                       <CheckCircle size={16} />
-                      Confirmar Agendamento
+                      {isSubmitting ? "Confirmando..." : "Confirmar Agendamento"}
                     </button>
                     <Link
                       href="/home"
@@ -193,17 +280,17 @@ export default function AgendarVisitaPage() {
               <div className="flex items-center justify-center gap-6 mt-4 mb-8">
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Data</p>
-                  <p className="font-bold text-white">{date}</p>
+                  <p className="font-bold text-white">{formData.date}</p>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Horário</p>
-                  <p className="font-bold text-white">{time}</p>
+                  <p className="font-bold text-white">{formData.time}</p>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Visitantes</p>
-                  <p className="font-bold text-white">{visitors} pessoa{parseInt(visitors) !== 1 ? "s" : ""}</p>
+                  <p className="font-bold text-white">{formData.visitors} pessoa{parseInt(formData.visitors) !== 1 ? "s" : ""}</p>
                 </div>
               </div>
               <p className="text-white/30 text-xs mb-8">Você receberá um email de confirmação em breve.</p>
