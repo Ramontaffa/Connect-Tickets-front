@@ -30,5 +30,6 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "@types/bun": "latest"
-  }
+  },
+  "packageManager": "bun@1.2.23"
 }
