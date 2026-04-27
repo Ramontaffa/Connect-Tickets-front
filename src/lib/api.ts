@@ -1,19 +1,17 @@
-import { getToken } from "@/lib/auth-session";
-
-const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiFetch<T>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit & { accessToken?: string }
 ): Promise<T> {
-  const token = getToken();
+  const { accessToken, ...fetchOptions } = options ?? {};
 
   const res = await fetch(`${API_URL}${path}`, {
-    ...options,
+    ...fetchOptions,
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options?.headers,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...fetchOptions?.headers,
     },
   });
 
@@ -25,30 +23,12 @@ export async function apiFetch<T>(
   return res.json();
 }
 
-export type LoginResponse = {
-  token?: string;
-  accessToken?: string;
-  type?: string;
-  id?: number;
-  username?: string;
-  email?: string;
-  name?: string;
-  roles?: string[];
-};
-
 export type RegisterResponse = {
   message?: string;
   id?: number;
   username?: string;
   email?: string;
 };
-
-export function login(email: string, password: string) {
-  return apiFetch<LoginResponse>("/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-}
 
 export function register(data: {
   name: string;

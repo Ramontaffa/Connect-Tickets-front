@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-[ui-sans-serif,system-ui,sans-serif]">
-        {children}
-        <Toaster position="top-right" />
+        <SessionProvider>
+          {children}
+          <Toaster position="top-right" />
+        </SessionProvider>
       </body>
     </html>
   );

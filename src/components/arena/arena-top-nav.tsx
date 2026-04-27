@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
-import { clearSession } from "@/lib/auth-session";
 import { cn } from "@/lib/utils";
 
 type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
@@ -28,11 +27,8 @@ const navItems = [
 ];
 
 export function ArenaTopNav({ active }: ArenaTopNavProps) {
-  const router = useRouter();
-
   function handleLogout() {
-    clearSession();
-    router.push("/");
+    signOut({ callbackUrl: "/" });
   }
 
   return (

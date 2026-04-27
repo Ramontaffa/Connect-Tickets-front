@@ -4,14 +4,13 @@ import { type FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CalendarDays, Loader2, Shield, User } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/api";
-import { saveSession } from "@/lib/auth-session";
 import { arenaTheme } from "@/lib/arena-theme";
 
 type Tab = "user" | "admin";
@@ -44,20 +43,21 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      const data = await login(email, password);
-      const token = data.token ?? data.accessToken ?? "";
-      saveSession(token, {
-        id: data.id,
-        name: data.name,
-        email: data.email ?? email,
-        username: data.username,
-        roles: data.roles,
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
-      const firstName = (data.name ?? data.username ?? email).split(" ")[0];
-      toast.success(`Bem-vindo, ${firstName}!`);
+
+      if (result?.error) {
+        toast.error("Email ou senha incorretos");
+        return;
+      }
+
+      toast.success("Bem-vindo!");
       router.push("/home");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao fazer login");
+    } catch {
+      toast.error("Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
