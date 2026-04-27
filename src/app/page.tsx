@@ -4,13 +4,13 @@ import { type FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CalendarDays, Loader2, Shield, User } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getRegisteredAccount, isRegisteredCredentialValid } from "@/lib/auth-storage";
 import { arenaTheme } from "@/lib/arena-theme";
 
 type Tab = "user" | "admin";
@@ -43,23 +43,21 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-      const registeredAccount = getRegisteredAccount();
-      if (!registeredAccount) {
-        toast.error("Nenhum cadastro autorizado foi encontrado. Crie uma conta primeiro.");
+      if (result?.error) {
+        toast.error("Email ou senha incorretos");
         return;
       }
 
-      const loginResult = isRegisteredCredentialValid(email, password);
-      if (!loginResult.valid || !loginResult.account) {
-        toast.error("Este login não é o cadastro autorizado.");
-        return;
-      }
-
-      const firstName = loginResult.account.name.trim().split(" ")[0];
-      toast.success(`Bem-vindo, ${firstName}!`);
+      toast.success("Bem-vindo!");
       router.push("/home");
+    } catch {
+      toast.error("Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
