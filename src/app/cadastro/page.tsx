@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { saveRegisteredAccount } from "@/lib/auth-storage";
+import { register } from "@/lib/api";
 import { arenaTheme } from "@/lib/arena-theme";
 
 export default function Cadastro() {
@@ -23,17 +23,23 @@ export default function Cadastro() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = (formData.get("name") as string).trim();
+    const username = (formData.get("username") as string).trim();
     const email = (formData.get("email") as string).trim();
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !username || !email || !password || !confirmPassword) {
       toast.error("Preencha todos os campos");
       return;
     }
 
     if (name.length < 3) {
       toast.error("O nome deve ter pelo menos 3 caracteres");
+      return;
+    }
+
+    if (username.length < 3) {
+      toast.error("O nome de usuário deve ter pelo menos 3 caracteres");
       return;
     }
 
@@ -52,17 +58,13 @@ export default function Cadastro() {
       return;
     }
 
-    // TODO: integrar com API de cadastro
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      saveRegisteredAccount({
-        name,
-        email,
-        password,
-      });
-      toast.success("Cadastro autorizado criado com sucesso!");
+      await register({ name, username, email, password });
+      toast.success("Conta criada com sucesso! Faça login para continuar.");
       router.push("/");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao criar conta");
     } finally {
       setIsLoading(false);
     }
@@ -109,6 +111,23 @@ export default function Cadastro() {
                   type="text"
                   placeholder="Seu nome"
                   autoComplete="name"
+                  className={arenaTheme.input + " mt-1.5 h-11 py-2"}
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="username"
+                  className="text-sm font-medium text-white/80"
+                >
+                  Nome de usuário
+                </Label>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="seuusuario"
+                  autoComplete="username"
                   className={arenaTheme.input + " mt-1.5 h-11 py-2"}
                 />
               </div>

@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getRegisteredAccount, isRegisteredCredentialValid } from "@/lib/auth-storage";
+import { login } from "@/lib/api";
+import { saveSession } from "@/lib/auth-session";
 import { arenaTheme } from "@/lib/arena-theme";
 
 type Tab = "user" | "admin";
@@ -43,23 +44,20 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
-
-      const registeredAccount = getRegisteredAccount();
-      if (!registeredAccount) {
-        toast.error("Nenhum cadastro autorizado foi encontrado. Crie uma conta primeiro.");
-        return;
-      }
-
-      const loginResult = isRegisteredCredentialValid(email, password);
-      if (!loginResult.valid || !loginResult.account) {
-        toast.error("Este login não é o cadastro autorizado.");
-        return;
-      }
-
-      const firstName = loginResult.account.name.trim().split(" ")[0];
+      const data = await login(email, password);
+      const token = data.token ?? data.accessToken ?? "";
+      saveSession(token, {
+        id: data.id,
+        name: data.name,
+        email: data.email ?? email,
+        username: data.username,
+        roles: data.roles,
+      });
+      const firstName = (data.name ?? data.username ?? email).split(" ")[0];
       toast.success(`Bem-vindo, ${firstName}!`);
       router.push("/home");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao fazer login");
     } finally {
       setIsLoading(false);
     }

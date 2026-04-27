@@ -1,5 +1,9 @@
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { clearSession } from "@/lib/auth-session";
 import { cn } from "@/lib/utils";
 
 type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
@@ -24,6 +28,13 @@ const navItems = [
 ];
 
 export function ArenaTopNav({ active }: ArenaTopNavProps) {
+  const router = useRouter();
+
+  function handleLogout() {
+    clearSession();
+    router.push("/");
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-arena-border bg-arena-nav px-8 py-4 backdrop-blur-xl">
       <div className="flex items-center gap-3">
@@ -49,12 +60,13 @@ export function ArenaTopNav({ active }: ArenaTopNavProps) {
           </Link>
         ))}
 
-        <Link
-          href="/"
-          className="ml-4 rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="ml-4 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
         >
           Sair
-        </Link>
+        </button>
       </div>
     </nav>
   );
