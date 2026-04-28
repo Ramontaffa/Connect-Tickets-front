@@ -67,15 +67,15 @@ export interface EventoDTO {
 
 export function listEventos(category?: string): Promise<EventoDTO[]> {
   const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return apiFetch<EventoDTO[]>(`/api/eventos${query}`);
+  return apiFetch<EventoDTO[]>(`/eventos${query}`);
 }
 
 export function getEvento(id: number): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/api/eventos/${id}`);
+  return apiFetch<EventoDTO>(`/eventos/${id}`);
 }
 
 export function createEvento(data: EventoDTO, token: string): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>("/api/eventos", {
+  return apiFetch<EventoDTO>("/eventos", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
@@ -87,7 +87,7 @@ export function updateEvento(
   data: EventoDTO,
   token: string
 ): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/api/eventos/${id}`, {
+  return apiFetch<EventoDTO>(`/eventos/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
     accessToken: token,
@@ -95,7 +95,7 @@ export function updateEvento(
 }
 
 export async function deleteEvento(id: number, token: string): Promise<void> {
-  const res = await fetch(`${API_URL}/api/eventos/${id}`, {
+  const res = await fetch(`${API_URL}/eventos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

@@ -6,5 +6,6 @@ export const config = {
     "/eventos/:path*",
     "/fale-conosco/:path*",
     "/agendar-visita/:path*",
+    "/admin/:path*",
   ],
 };
