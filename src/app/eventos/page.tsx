@@ -65,8 +65,8 @@ export default function EventosPage() {
         <p className="text-white/40">Encontre o evento perfeito para você</p>
       </div>
 
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
+      <div className="mb-8 flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center">
+        <div className="relative w-full lg:min-w-0 lg:flex-1">
           <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
           <input
             type="text"
@@ -77,13 +77,13 @@ export default function EventosPage() {
           />
         </div>
 
-        <div className="flex items-center gap-1 rounded-xl border border-white/8 bg-white/3 p-1">
-          <SlidersHorizontal size={13} className="ml-2 text-white/30" />
+        <div className="flex w-full items-center gap-1 overflow-x-auto rounded-xl border border-white/8 bg-white/3 p-1 sm:overflow-visible lg:flex-[1.4]">
+          <SlidersHorizontal size={13} className="ml-2 shrink-0 text-white/30" />
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+              className={`rounded-lg px-3 py-2 text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
                 category === cat ? "bg-violet-600 text-white" : "text-white/40 hover:text-white"
               }`}
             >
@@ -95,7 +95,7 @@ export default function EventosPage() {
         <select
           value={order}
           onChange={(e) => setOrder(e.target.value)}
-          className={arenaTheme.input + " cursor-pointer appearance-none"}
+          className={arenaTheme.input + " w-full cursor-pointer appearance-none lg:w-52"}
         >
           {ORDER_OPTIONS.map((opt) => (
             <option key={opt} value={opt} className="bg-[#0a0a0f]">
