@@ -55,7 +55,7 @@ export default function Home() {
       }
 
       toast.success("Bem-vindo!");
-      router.push("/home");
+      router.push(activeTab === "admin" ? "/admin/dashboard" : "/home");
     } catch {
       toast.error("Erro ao fazer login. Tente novamente.");
     } finally {
