@@ -1,241 +1,154 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { CalendarDays, Clock, Users, SlidersHorizontal, ArrowRight, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
+import { EventCard } from "@/components/event-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { arenaTheme } from "@/lib/arena-theme";
-
-const ALL_EVENTS = [
-  {
-    id: 1,
-    title: "Campeonato Estadual de Futebol",
-    category: "Esporte",
-    date: "24 de março de 2026",
-    dateSort: "2026-03-24",
-    time: "16:00",
-    participants: "41.200",
-    occupancy: 92,
-    image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80",
-    categoryColor: "bg-emerald-500",
-  },
-  {
-    id: 2,
-    title: "Torneio de Basquete",
-    category: "Esporte",
-    date: "31 de março de 2026",
-    dateSort: "2026-03-31",
-    time: "19:00",
-    participants: "22.400",
-    occupancy: 75,
-    image: "https://images.unsplash.com/photo-1546519638405-a0c3ef2a0f6e?w=600&q=80",
-    categoryColor: "bg-emerald-500",
-  },
-  {
-    id: 3,
-    title: "Mostra Cultural Nordestina",
-    category: "Cultural",
-    date: "09 de abril de 2026",
-    dateSort: "2026-04-09",
-    time: "18:00",
-    participants: "18.300",
-    occupancy: 73,
-    image: "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=600&q=80",
-    categoryColor: "bg-amber-500",
-  },
-  {
-    id: 4,
-    title: "Festival de Música Internacional",
-    category: "Show",
-    date: "19 de abril de 2026",
-    dateSort: "2026-04-19",
-    time: "20:00",
-    participants: "32.500",
-    occupancy: 72,
-    image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
-    categoryColor: "bg-pink-500",
-  },
-  {
-    id: 5,
-    title: "Congresso de Tecnologia e Inovação",
-    category: "Corporativo",
-    date: "14 de maio de 2026",
-    dateSort: "2026-05-14",
-    time: "09:00",
-    participants: "12.800",
-    occupancy: 85,
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
-    categoryColor: "bg-blue-500",
-  },
-  {
-    id: 6,
-    title: "Show de Rock Nacional",
-    category: "Show",
-    date: "04 de junho de 2026",
-    dateSort: "2026-06-04",
-    time: "21:00",
-    participants: "28.900",
-    occupancy: 72,
-    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80",
-    categoryColor: "bg-pink-500",
-  },
-];
+import { listEventos, type EventoDTO } from "@/lib/api";
 
 const CATEGORIES = ["Todos", "Esporte", "Cultural", "Show", "Corporativo"];
 const ORDER_OPTIONS = ["Data", "Lotação", "Participantes"];
 
+function calcOccupancy(event: EventoDTO): number {
+  if (!event.capacity) return 0;
+  return Math.round((event.expectedAttendance / event.capacity) * 100);
+}
+
+function formatCategory(category: EventoDTO["category"]): string {
+  if (category === "ESPORTE") return "Esporte";
+  if (category === "CULTURAL") return "Cultural";
+  if (category === "SHOW") return "Show";
+  return "Corporativo";
+}
+
 export default function EventosPage() {
+  const [events, setEvents] = useState<EventoDTO[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
   const [order, setOrder] = useState("Data");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = ALL_EVENTS
-    .filter((e) => {
-      const matchCat = category === "Todos" || e.category === category;
-      const matchSearch = e.title.toLowerCase().includes(search.toLowerCase());
-      return matchCat && matchSearch;
-    })
-    .sort((a, b) => {
-      if (order === "Data") return a.dateSort.localeCompare(b.dateSort);
-      if (order === "Lotação") return b.occupancy - a.occupancy;
-      return parseInt(b.participants.replace(".", "")) - parseInt(a.participants.replace(".", ""));
-    });
+  useEffect(() => {
+    listEventos()
+      .then((data) => setEvents(data))
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : "Erro ao carregar eventos";
+        setError(msg);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = useMemo(() => {
+    return [...events]
+      .filter((event) => {
+        const matchCategory = category === "Todos" || formatCategory(event.category) === category;
+        const matchSearch = event.eventName.toLowerCase().includes(search.toLowerCase());
+        return matchCategory && matchSearch;
+      })
+      .sort((a, b) => {
+        if (order === "Data") return new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime();
+        if (order === "Lotação") return calcOccupancy(b) - calcOccupancy(a);
+        return b.expectedAttendance - a.expectedAttendance;
+      });
+  }, [category, events, order, search]);
 
   return (
     <ArenaPageLayout active="eventos">
+      <div className="mb-10">
+        <h1 className="mb-2 text-5xl font-black tracking-tight">
+          Todos os <span className="bg-linear-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Eventos</span>
+        </h1>
+        <p className="text-white/40">Encontre o evento perfeito para você</p>
+      </div>
 
-          {/* HEADER */}
-          <div className="mb-10">
-            <h1 className="text-5xl font-black tracking-tight mb-2">
-              Todos os{" "}
-              <span className="bg-linear-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                Eventos
-              </span>
-            </h1>
-            <p className="text-white/40">Encontre o evento perfeito para você</p>
-          </div>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+        <div className="relative flex-1">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            type="text"
+            placeholder="Buscar evento..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={"pl-10 " + arenaTheme.input}
+          />
+        </div>
 
-          {/* FILTERS */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
-              <input
-                type="text"
-                placeholder="Buscar evento..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className={"pl-10 " + arenaTheme.input}
-              />
-            </div>
-
-            {/* Category filter */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/3 border border-white/8">
-              <SlidersHorizontal size={13} className="text-white/30 ml-2" />
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                    category === cat
-                      ? "bg-violet-600 text-white"
-                      : "text-white/40 hover:text-white"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Order */}
-            <select
-              value={order}
-              onChange={(e) => setOrder(e.target.value)}
-              className={arenaTheme.input + " appearance-none cursor-pointer"}
+        <div className="flex items-center gap-1 rounded-xl border border-white/8 bg-white/3 p-1">
+          <SlidersHorizontal size={13} className="ml-2 text-white/30" />
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                category === cat ? "bg-violet-600 text-white" : "text-white/40 hover:text-white"
+              }`}
             >
-              {ORDER_OPTIONS.map((opt) => (
-                <option key={opt} value={opt} className="bg-[#0a0a0f]">{opt}</option>
-              ))}
-            </select>
-          </div>
+              {cat}
+            </button>
+          ))}
+        </div>
 
-          {/* COUNT */}
-          <p className="text-white/30 text-sm mb-6">
-            Exibindo <span className="text-white/60 font-semibold">{filtered.length}</span> evento{filtered.length !== 1 ? "s" : ""}
-          </p>
+        <select
+          value={order}
+          onChange={(e) => setOrder(e.target.value)}
+          className={arenaTheme.input + " cursor-pointer appearance-none"}
+        >
+          {ORDER_OPTIONS.map((opt) => (
+            <option key={opt} value={opt} className="bg-[#0a0a0f]">
+              {opt}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          {/* GRID */}
-          <div className="grid grid-cols-3 gap-5">
-            {filtered.map((event) => (
-              <div
-                key={event.id}
-                className={arenaTheme.glassCard + " group overflow-hidden hover:border-violet-500/30 transition-all hover:-translate-y-1 duration-300"}
-              >
-                <div className="relative h-52 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
-                  <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${event.categoryColor}`}>
-                    {event.category}
-                  </span>
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <div className="flex justify-between text-xs text-white/60 mb-1">
-                      <span>{event.occupancy}% lotação</span>
-                      <span className={event.occupancy >= 90 ? "text-red-400" : event.occupancy >= 75 ? "text-amber-400" : "text-emerald-400"}>
-                        {event.occupancy >= 90 ? "Quase lotado" : event.occupancy >= 75 ? "Alta demanda" : "Disponível"}
-                      </span>
-                    </div>
-                    <div className="h-1 bg-white/20 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all ${
-                          event.occupancy >= 90 ? "bg-linear-to-r from-red-500 to-orange-500" :
-                          event.occupancy >= 75 ? "bg-linear-to-r from-amber-500 to-yellow-500" :
-                          "bg-linear-to-r from-violet-500 to-fuchsia-500"
-                        }`}
-                        style={{ width: `${event.occupancy}%` }}
-                      />
-                    </div>
-                  </div>
+      <p className="mb-6 text-sm text-white/30">
+        Exibindo <span className="font-semibold text-white/60">{filtered.length}</span> evento
+        {filtered.length !== 1 ? "s" : ""}
+      </p>
+
+      {error && !loading && (
+        <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-200">
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-3 gap-5">
+        {loading ? (
+          [1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} className={arenaTheme.glassCard + " overflow-hidden"}>
+              <Skeleton className="h-52 w-full rounded-none rounded-t-2xl" />
+              <div className="p-5">
+                <Skeleton className="mb-3 h-5 w-44" />
+                <div className="mb-4 space-y-2">
+                  <Skeleton className="h-3 w-36" />
+                  <Skeleton className="h-3 w-28" />
+                  <Skeleton className="h-3 w-40" />
                 </div>
-
-                <div className="p-5">
-                  <h3 className="font-bold text-white mb-3 leading-tight text-base">{event.title}</h3>
-                  <div className="space-y-1.5 mb-4">
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <CalendarDays size={12} />
-                      {event.date}
-                    </div>
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <Clock size={12} />
-                      {event.time}
-                    </div>
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <Users size={12} />
-                      {event.participants} participantes
-                    </div>
-                  </div>
-                  <Link
-                    href={`/eventos/${event.id}`}
-                    className="flex items-center justify-center gap-2 w-full py-2.5 text-center text-sm font-semibold rounded-xl bg-linear-to-r from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 text-violet-300 hover:from-violet-600 hover:to-fuchsia-600 hover:text-white hover:border-transparent transition-all"
-                  >
-                    Ver Detalhes
-                    <ArrowRight size={13} />
-                  </Link>
-                </div>
+                <Skeleton className="h-10 w-full rounded-xl" />
               </div>
-            ))}
-          </div>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-24">
-              <div className="text-4xl mb-4">🔍</div>
-              <p className="text-white/30 text-sm">Nenhum evento encontrado para os filtros selecionados.</p>
             </div>
-          )}
+          ))
+        ) : (
+          filtered.map((event) => (
+            <EventCard
+              key={event.idEvento ?? event.eventName}
+              evento={event}
+              href={event.idEvento ? `/eventos/${event.idEvento}` : "/eventos"}
+            />
+          ))
+        )}
+      </div>
+
+      {!loading && filtered.length === 0 && (
+        <div className="py-24 text-center">
+          <div className="mb-4 text-4xl">🔍</div>
+          <p className="text-sm text-white/30">Nenhum evento encontrado para os filtros selecionados.</p>
+        </div>
+      )}
     </ArenaPageLayout>
   );
 }

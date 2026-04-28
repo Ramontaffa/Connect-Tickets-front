@@ -1,55 +1,69 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Users, TrendingUp, MapPin, ArrowRight, Clock } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
+import { EventCard } from "@/components/event-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { listEventos, type EventoDTO } from "@/lib/api";
 import { arenaTheme } from "@/lib/arena-theme";
 
-const stats = [
-  { icon: CalendarDays, value: "6", label: "Eventos Disponíveis" },
-  { icon: Users, value: "158K", label: "Participantes Totais" },
-  { icon: TrendingUp, value: "45K", label: "Capacidade Máxima" },
-  { icon: MapPin, value: "365", label: "Dias de Evento/Ano" },
-];
+function buildStats(events: EventoDTO[]) {
+  const totalEvents = events.length;
+  const totalParticipants = events.reduce((sum, event) => sum + event.expectedAttendance, 0);
+  const totalCapacity = events.reduce((sum, event) => sum + event.capacity, 0);
+  const avgOccupancy =
+    totalEvents === 0
+      ? 0
+      : Math.round(
+          events.reduce((sum, event) => {
+            if (!event.capacity) return sum;
+            return sum + (event.expectedAttendance / event.capacity) * 100;
+          }, 0) / totalEvents
+        );
 
-const events = [
-  {
-    id: 1,
-    title: "Campeonato Estadual de Futebol",
-    category: "Esporte",
-    date: "24 de março de 2026",
-    time: "16:00",
-    participants: "41.200",
-    occupancy: 92,
-    image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80",
-    categoryColor: "bg-emerald-500",
-  },
-  {
-    id: 2,
-    title: "Torneio de Basquete",
-    category: "Esporte",
-    date: "31 de março de 2026",
-    time: "19:00",
-    participants: "22.400",
-    occupancy: 75,
-    image: "https://images.unsplash.com/photo-1546519638405-a0c3ef2a0f6e?w=600&q=80",
-    categoryColor: "bg-emerald-500",
-  },
-  {
-    id: 3,
-    title: "Mostra Cultural Nordestina",
-    category: "Cultural",
-    date: "09 de abril de 2026",
-    time: "18:00",
-    participants: "18.300",
-    occupancy: 73,
-    image: "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=600&q=80",
-    categoryColor: "bg-amber-500",
-  },
-];
+  return {
+    totalEvents,
+    totalParticipants,
+    totalCapacity,
+    avgOccupancy,
+  };
+}
 
 export default function HomePage() {
+  const [events, setEvents] = useState<EventoDTO[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    listEventos()
+      .then((data) => setEvents(data))
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : "Erro ao carregar eventos";
+        setError(msg);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const featuredEvents = useMemo(
+    () =>
+      [...events]
+        .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
+        .slice(0, 3),
+    [events]
+  );
+
+  const { totalEvents, totalParticipants, totalCapacity, avgOccupancy } = buildStats(events);
+
+  const stats = [
+    { icon: CalendarDays, value: totalEvents.toLocaleString("pt-BR"), label: "Eventos Disponíveis" },
+    { icon: Users, value: totalParticipants.toLocaleString("pt-BR"), label: "Participantes Totais" },
+    { icon: TrendingUp, value: totalCapacity.toLocaleString("pt-BR"), label: "Capacidade Máxima" },
+    { icon: MapPin, value: `${avgOccupancy}%`, label: "Lotação Média" },
+  ];
+
   return (
     <ArenaPageLayout
       active="home"
@@ -134,61 +148,40 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-3 gap-5">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className={arenaTheme.glassCard + " group overflow-hidden hover:border-violet-500/30 transition-all hover:-translate-y-1 duration-300"}
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                  <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white ${event.categoryColor}`}>
-                    {event.category}
-                  </span>
-                  {/* Occupancy bar */}
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <div className="flex justify-between text-xs text-white/70 mb-1">
-                      <span>{event.occupancy}% lotação</span>
+            {loading ? (
+              [1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className={arenaTheme.glassCard + " overflow-hidden"}
+                >
+                  <Skeleton className="h-48 w-full rounded-none rounded-t-2xl" />
+                  <div className="p-5">
+                    <Skeleton className="mb-3 h-5 w-48" />
+                    <div className="mb-4 space-y-2">
+                      <Skeleton className="h-3 w-36" />
+                      <Skeleton className="h-3 w-28" />
+                      <Skeleton className="h-3 w-40" />
                     </div>
-                    <div className="h-1 bg-white/20 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-linear-to-r from-violet-500 to-fuchsia-500 rounded-full"
-                        style={{ width: `${event.occupancy}%` }}
-                      />
-                    </div>
+                    <Skeleton className="h-10 w-full rounded-xl" />
                   </div>
                 </div>
-
-                <div className="p-5">
-                  <h3 className="font-bold text-white mb-3 leading-tight">{event.title}</h3>
-                  <div className="space-y-1.5 mb-4">
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <CalendarDays size={12} />
-                      {event.date}
-                    </div>
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <Clock size={12} />
-                      {event.time}
-                    </div>
-                    <div className="flex items-center gap-2 text-white/40 text-xs">
-                      <Users size={12} />
-                      {event.participants} participantes
-                    </div>
-                  </div>
-                  <Link
-                    href={`/eventos/${event.id}`}
-                    className="block w-full py-2.5 text-center text-sm font-semibold rounded-xl bg-linear-to-r from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 text-violet-300 hover:from-violet-600 hover:to-fuchsia-600 hover:text-white hover:border-transparent transition-all"
-                  >
-                    Ver Detalhes
-                  </Link>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              featuredEvents.map((event) => (
+                <EventCard
+                  key={event.idEvento ?? event.eventName}
+                  evento={event}
+                  href={event.idEvento ? `/eventos/${event.idEvento}` : "/eventos"}
+                />
+              ))
+            )}
           </div>
+
+          {error && !loading && (
+            <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-200">
+              {error}
+            </div>
+          )}
 
           <div className="flex justify-center mt-10">
             <Link
