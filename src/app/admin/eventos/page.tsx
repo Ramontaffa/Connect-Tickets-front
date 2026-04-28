@@ -7,6 +7,7 @@ import { ArrowLeft, PlusCircle, Pencil, Trash2, AlertTriangle } from "lucide-rea
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -173,13 +174,38 @@ export default function AdminEventosPage() {
 
       {/* LOADING STATE */}
       {loading ? (
-        <div className="space-y-3">
-          {[1, 2, 3, 4].map((n) => (
-            <div
-              key={n}
-              className="h-16 animate-pulse rounded-xl border border-gray-200 bg-white"
-            />
-          ))}
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nome</th>
+                <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Categoria</th>
+                <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Data</th>
+                <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Capacidade</th>
+                <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Público Esperado</th>
+                <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Preço</th>
+                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5].map((n, idx) => (
+                <tr key={n} className="border-b border-gray-100 last:border-0">
+                  <td className="px-6 py-4"><Skeleton className="h-4 w-40" /></td>
+                  <td className="px-4 py-4"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                  <td className="px-4 py-4"><Skeleton className="h-4 w-28" /></td>
+                  <td className="px-4 py-4 text-right"><Skeleton className="ml-auto h-4 w-16" /></td>
+                  <td className="px-4 py-4 text-right"><Skeleton className="ml-auto h-4 w-16" /></td>
+                  <td className="px-4 py-4"><Skeleton className="h-4 w-20" /></td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <Skeleton className="h-8 w-16 rounded-lg" />
+                      <Skeleton className="h-8 w-16 rounded-lg" />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : events.length === 0 ? (
         <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">

@@ -27,6 +27,7 @@ import {
 } from "recharts";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
+import { Skeleton } from "@/components/ui/skeleton";
 import { listEventos, type EventoDTO } from "@/lib/api";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -187,14 +188,50 @@ export default function AdminDashboardPage() {
 
       {/* LOADING STATE */}
       {loading ? (
-        <div className="mb-8 grid grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((n) => (
-            <div
-              key={n}
-              className="h-32 animate-pulse rounded-xl border border-gray-200 bg-white"
-            />
-          ))}
-        </div>
+        <>
+          {/* Stat cards skeleton */}
+          <div className="mb-8 grid grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="rounded-xl border border-gray-200 bg-white p-6">
+                <Skeleton className="mb-4 h-10 w-10 rounded-xl" />
+                <Skeleton className="mb-2 h-7 w-24" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+            ))}
+          </div>
+
+          {/* Charts skeleton */}
+          <div className="mb-8 flex gap-4">
+            <div className="flex-[55] rounded-xl border border-gray-200 bg-white p-6">
+              <Skeleton className="mb-6 h-5 w-48" />
+              <Skeleton className="h-[300px] w-full rounded-lg" />
+            </div>
+            <div className="flex-[45] rounded-xl border border-gray-200 bg-white p-6">
+              <Skeleton className="mb-6 h-5 w-40" />
+              <Skeleton className="h-[300px] w-full rounded-lg" />
+            </div>
+          </div>
+
+          {/* Top events skeleton */}
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <Skeleton className="mb-6 h-5 w-44" />
+            <div className="space-y-0">
+              {[1, 2, 3].map((n, idx) => (
+                <div key={n}>
+                  <div className="flex items-center gap-4 py-4">
+                    <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                  {idx < 2 && <div className="h-px bg-gray-100" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       ) : (
         <>
           {/* STAT CARDS */}
