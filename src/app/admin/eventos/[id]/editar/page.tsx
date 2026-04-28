@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ArrowLeft, PlusCircle, Save } from "lucide-react";
+import { ArrowLeft, Pencil, Save } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createEvento, type EventoCategory } from "@/lib/api";
+import { getEvento, updateEvento, type EventoCategory } from "@/lib/api";
 
 interface FormFields {
   name: string;
@@ -52,9 +52,22 @@ const CATEGORIES = [
   { label: "Corporativo", value: "CORPORATIVO" },
 ] as const;
 
-export default function CadastrarEventoPage() {
+function parseDateFromISO(iso: string): string {
+  // retorna "YYYY-MM-DD"
+  return iso.slice(0, 10);
+}
+
+function parseTimeFromISO(iso: string): string {
+  // retorna "HH:MM"
+  return iso.slice(11, 16);
+}
+
+export default function EditarEventoPage() {
   const router = useRouter();
+  const params = useParams();
   const { data: session } = useSession();
+
+  const eventoId = Number(params.id);
 
   const [fields, setFields] = useState<FormFields>({
     name: "",
@@ -72,15 +85,45 @@ export default function CadastrarEventoPage() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [apiError, setApiError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!eventoId || isNaN(eventoId)) {
+      setLoadError("ID de evento inválido.");
+      setLoading(false);
+      return;
+    }
+
+    getEvento(eventoId)
+      .then((evento) => {
+        setFields({
+          name: evento.eventName,
+          date: parseDateFromISO(evento.scheduledAt),
+          time: parseTimeFromISO(evento.scheduledAt),
+          category: evento.category,
+          description: evento.description ?? "",
+          capacity: String(evento.capacity),
+          expectedAttendance: String(evento.expectedAttendance),
+          isFree: evento.isFree ?? false,
+          price: evento.price != null ? String(evento.price) : "",
+          locationDetail: evento.locationDetail ?? "",
+          imageUrl: evento.imageUrl ?? "",
+        });
+      })
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : "Erro ao carregar evento.";
+        setLoadError(msg);
+      })
+      .finally(() => setLoading(false));
+  }, [eventoId]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    const { name, value, type } = e.target;
-    const newValue =
-      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
-    setFields((prev) => ({ ...prev, [name]: newValue }));
+    const { name, value } = e.target;
+    setFields((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -109,13 +152,6 @@ export default function CadastrarEventoPage() {
 
     if (!fields.date) {
       newErrors.date = "A data do evento é obrigatória.";
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const selected = new Date(fields.date + "T00:00:00");
-      if (selected <= today) {
-        newErrors.date = "A data do evento deve ser futura.";
-      }
     }
 
     if (!fields.time) {
@@ -172,7 +208,7 @@ export default function CadastrarEventoPage() {
 
     const token = session?.accessToken;
     if (!token) {
-      setApiError("Você precisa estar autenticado para cadastrar eventos.");
+      setApiError("Você precisa estar autenticado para editar eventos.");
       return;
     }
 
@@ -183,7 +219,8 @@ export default function CadastrarEventoPage() {
 
     setSubmitting(true);
     try {
-      await createEvento(
+      await updateEvento(
+        eventoId,
         {
           eventName: fields.name.trim(),
           description: fields.description.trim() || undefined,
@@ -201,15 +238,52 @@ export default function CadastrarEventoPage() {
       );
       router.push("/admin/eventos");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Erro ao cadastrar evento.";
+      const msg = err instanceof Error ? err.message : "Erro ao atualizar evento.";
       setApiError(msg);
     } finally {
       setSubmitting(false);
     }
   }
 
-  function handleCancel() {
-    router.push("/admin/dashboard");
+  if (loading) {
+    return (
+      <ArenaPageLayout
+        active="home"
+        contentClassName="pt-28 pb-24 px-8 bg-gray-50 min-h-screen"
+        containerClassName="mx-auto w-full max-w-2xl"
+      >
+        <div className="space-y-4">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="h-12 animate-pulse rounded-xl border border-gray-200 bg-white"
+            />
+          ))}
+        </div>
+      </ArenaPageLayout>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <ArenaPageLayout
+        active="home"
+        contentClassName="pt-28 pb-24 px-8 bg-gray-50 min-h-screen"
+        containerClassName="mx-auto w-full max-w-2xl"
+      >
+        <Link
+          href="/admin/eventos"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
+        >
+          <ArrowLeft size={16} />
+          Voltar à lista de eventos
+        </Link>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+          <p className="text-sm font-semibold text-red-700">Evento não encontrado</p>
+          <p className="mt-1 text-xs text-red-600">{loadError}</p>
+        </div>
+      </ArenaPageLayout>
+    );
   }
 
   return (
@@ -220,24 +294,24 @@ export default function CadastrarEventoPage() {
     >
       {/* BACK LINK */}
       <Link
-        href="/admin/dashboard"
+        href="/admin/eventos"
         className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
       >
         <ArrowLeft size={16} />
-        Voltar ao Dashboard
+        Voltar à lista de eventos
       </Link>
 
       {/* PAGE HEADER */}
       <div className="mb-8 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100">
-          <PlusCircle size={20} className="text-blue-600" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+          <Pencil size={20} className="text-amber-600" />
         </div>
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">
-            Cadastrar Evento
+            Editar Evento
           </h1>
-          <p className="mt-1 text-sm text-blue-600">
-            Preencha as informações abaixo para adicionar um novo evento à programação.
+          <p className="mt-1 text-sm text-amber-600">
+            Atualize as informações do evento abaixo.
           </p>
         </div>
       </div>
@@ -483,46 +557,18 @@ export default function CadastrarEventoPage() {
               className="flex flex-[40] items-center justify-center gap-2 rounded-xl bg-gray-900 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
             >
               <Save size={15} />
-              {submitting ? "Salvando..." : "Salvar Evento"}
+              {submitting ? "Salvando..." : "Salvar Alterações"}
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={handleCancel}
+              onClick={() => router.push("/admin/eventos")}
               className="flex-[40] rounded-xl border-gray-300 bg-white py-2.5 text-sm font-semibold text-gray-900 hover:bg-gray-50"
             >
               Cancelar
             </Button>
           </div>
         </form>
-      </div>
-
-      {/* INFO CARD */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-sm font-semibold text-gray-900">
-          Informações importantes
-        </h2>
-        <ul className="space-y-2 text-sm text-gray-700">
-          <li>
-            &bull; Os campos marcados com <span className="font-semibold text-red-500">*</span> são{" "}
-            <span className="font-semibold text-blue-600">obrigatórios</span>
-          </li>
-          <li>
-            &bull; A data do evento deve ser{" "}
-            <span className="font-semibold text-blue-600">futura</span>
-          </li>
-          <li>
-            &bull; A capacidade máxima da arena é de{" "}
-            <span className="font-semibold text-blue-600">45.000 pessoas</span>
-          </li>
-          <li>
-            &bull; Após salvar, o evento estará{" "}
-            <span className="font-semibold text-blue-600">disponível publicamente</span>
-          </li>
-          <li>
-            &bull; Você poderá editar ou remover o evento posteriormente
-          </li>
-        </ul>
       </div>
     </ArenaPageLayout>
   );
