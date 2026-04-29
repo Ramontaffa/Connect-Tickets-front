@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,6 +36,16 @@ const navItems = [
 export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopNavProps) {
   const router = useRouter();
   const isAdmin = user?.role === "ADMIN";
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    function onOutsideClick() {
+      setMenuOpen(false);
+    }
+
+    window.addEventListener("click", onOutsideClick);
+    return () => window.removeEventListener("click", onOutsideClick);
+  }, []);
 
   function handleLogout() {
     clearSession();
@@ -78,27 +90,41 @@ export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopN
         ))}
 
         {isAuthenticated ? (
-          <div className="ml-4 flex items-center gap-2">
-            {isAdmin && (
-              <>
-                <Button
-                  type="button"
-                  onClick={goToAdmin}
-                  variant="outline"
-                  className="rounded-lg border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 hover:text-white"
-                >
-                  Tela admin
-                </Button>
-                <Button
-                  type="button"
-                  onClick={goToUserArea}
-                  variant="outline"
-                  className="rounded-lg border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 hover:text-white"
-                >
-                  Tela do usuário
-                </Button>
-              </>
-            )}
+          <div className="ml-4 flex items-center gap-2 relative">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setMenuOpen((s) => !s); }}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-white/80 hover:bg-white/5"
+              >
+                Área
+              </button>
+
+              {menuOpen && (
+                <div onClick={(e) => e.stopPropagation()} className="absolute right-0 mt-2 w-44 rounded-lg bg-black border border-arena-border shadow-lg py-1">
+                  <button
+                    className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"
+                    onClick={() => { setMenuOpen(false); goToUserArea(); }}
+                  >
+                    Tela do usuário
+                  </button>
+                  <button
+                    className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      if (!isAdmin) {
+                        toast.error("Acesso negado: você não tem permissão de admin.");
+                        return;
+                      }
+                      goToAdmin();
+                    }}
+                  >
+                    Tela admin
+                  </button>
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={handleLogout}
