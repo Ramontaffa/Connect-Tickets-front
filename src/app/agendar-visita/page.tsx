@@ -2,112 +2,61 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MapPin, Calendar, Clock, Users, CheckCircle, ArrowLeft, Phone, Mail, MessageCircle, Info } from "lucide-react";
-import { toast } from "sonner";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { arenaTheme } from "@/lib/arena-theme";
+import { useAuth } from "@/lib/use-auth";
+import { useScheduleVisit, getTodayDateString } from "@/features/agendar-visita/application/use-schedule-visit";
 
 const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
 
-type VisitFormData = {
-  date: string;
-  time: string;
-  visitors: string;
-};
-
-type VisitFormErrors = Partial<Record<keyof VisitFormData, string>>;
-
-const initialFormData: VisitFormData = {
-  date: "",
-  time: "",
-  visitors: "",
-};
-
-function getTodayDateString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = `${now.getMonth() + 1}`.padStart(2, "0");
-  const day = `${now.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function isWeekday(dateValue: string) {
-  const date = new Date(`${dateValue}T00:00:00`);
-  const day = date.getDay();
-  return day >= 1 && day <= 5;
-}
-
 export default function AgendarVisitaPage() {
-  const [formData, setFormData] = useState<VisitFormData>(initialFormData);
-  const [errors, setErrors] = useState<VisitFormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const [submitted, setSubmitted] = useState(false);
-
-  function handleFieldChange(field: keyof VisitFormData, value: string) {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-  }
-
-  function validateForm(values: VisitFormData): VisitFormErrors {
-    const nextErrors: VisitFormErrors = {};
-    const today = getTodayDateString();
-
-    if (!values.date) {
-      nextErrors.date = "Selecione uma data para a visita.";
-    } else if (values.date < today) {
-      nextErrors.date = "Escolha uma data de hoje em diante.";
-    } else if (!isWeekday(values.date)) {
-      nextErrors.date = "Selecione uma data entre segunda e sexta-feira.";
-    }
-
-    if (!values.time) {
-      nextErrors.time = "Selecione um horário disponível.";
-    }
-
-    if (!values.visitors.trim()) {
-      nextErrors.visitors = "Informe o número de visitantes.";
-    } else {
-      const totalVisitors = Number(values.visitors);
-      if (!Number.isInteger(totalVisitors) || totalVisitors < 1 || totalVisitors > 50) {
-        nextErrors.visitors = "Informe um número entre 1 e 50 visitantes.";
-      }
-    }
-
-    return nextErrors;
-  }
+  const { formData, errors, isSubmitting, handleFieldChange, handleSubmit: submitForm, resetForm } = useScheduleVisit();
+  
+  // Hook para verificação manual de autenticação
+  const { isAuthenticated, isLoading, redirectToLogin } = useAuth();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    const validationErrors = validateForm(formData);
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length > 0) {
-      toast.error("Preencha os campos obrigatórios e revise os valores informados.");
+    
+    // Verifica autenticação antes de enviar
+    if (!isAuthenticated) {
+      redirectToLogin("/agendar-visita");
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      toast.success("Visita agendada com sucesso!");
+    const success = await submitForm(e as React.FormEvent<HTMLFormElement>);
+    if (success) {
       setSubmitted(true);
-    } catch {
-      toast.error("Não foi possível concluir o agendamento. Tente novamente.");
-    } finally {
-      setIsSubmitting(false);
     }
+  }
+
+  // Mostra loading enquanto verifica autenticação
+  if (isLoading) {
+    return (
+      <ArenaPageLayout
+        active="agendar-visita"
+        containerClassName="max-w-3xl"
+        isAuthenticated={isAuthenticated}
+      >
+        <div className="flex items-center justify-center min-h-96">
+          <div className="animate-pulse">
+            <p className="text-white/50">Carregando...</p>
+          </div>
+        </div>
+      </ArenaPageLayout>
+    );
   }
 
   return (
     <ArenaPageLayout
       active="agendar-visita"
       containerClassName="max-w-3xl"
+      isAuthenticated={isAuthenticated}
       topDecoration={
         <div className="fixed top-0 right-0 h-125 w-125 rounded-full bg-violet-600/10 blur-[150px] pointer-events-none" />
       }

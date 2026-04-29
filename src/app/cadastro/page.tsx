@@ -62,7 +62,7 @@ export default function Cadastro() {
     try {
       await register({ name, username, email, password });
       toast.success("Conta criada com sucesso! Faça login para continuar.");
-      router.push("/");
+      router.push("/login");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao criar conta");
     } finally {
@@ -230,7 +230,7 @@ export default function Cadastro() {
                   Já tem uma conta?{" "}
                 </span>
                 <Link
-                  href="/"
+                  href="/login"
                   className="text-sm font-medium text-violet-300 hover:text-violet-200"
                 >
                   Entrar

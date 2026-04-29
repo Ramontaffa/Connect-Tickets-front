@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { clearSession } from "@/lib/auth-session";
 
@@ -10,6 +12,7 @@ type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
 
 type ArenaTopNavProps = {
   active: NavKey;
+  isAuthenticated?: boolean;
 };
 
 const navItems = [
@@ -27,10 +30,16 @@ const navItems = [
   },
 ];
 
-export function ArenaTopNav({ active }: ArenaTopNavProps) {
+export function ArenaTopNav({ active, isAuthenticated = false }: ArenaTopNavProps) {
+  const router = useRouter();
+
   function handleLogout() {
     clearSession();
     signOut({ callbackUrl: "/" });
+  }
+
+  function handleLogin() {
+    router.push("/login");
   }
 
   return (
@@ -58,13 +67,23 @@ export function ArenaTopNav({ active }: ArenaTopNavProps) {
           </Link>
         ))}
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="ml-4 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
-        >
-          Sair
-        </button>
+        {isAuthenticated ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="ml-4 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
+          >
+            Sair
+          </button>
+        ) : (
+          <Button
+            onClick={handleLogin}
+            variant="outline"
+            className="ml-4 rounded-lg px-4 py-2 text-sm font-medium"
+          >
+            Entrar
+          </Button>
+        )}
       </div>
     </nav>
   );

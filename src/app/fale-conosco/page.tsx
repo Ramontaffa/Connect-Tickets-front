@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, MessageSquareText } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
+import { useAuth } from "@/lib/use-auth";
 import { useContactForm } from "@/features/fale-conosco/application/use-contact-form";
 import { ContactFormCard } from "@/features/fale-conosco/presentation/contact-form-card";
 import { ContactInfoCards } from "@/features/fale-conosco/presentation/contact-info-cards";
@@ -13,10 +15,43 @@ export default function FaleConoscoPage() {
   const { formData, errors, isSubmitting, handleFieldChange, handleSubmit } =
     useContactForm();
 
+  // Hook para verificação manual de autenticação
+  const { isAuthenticated, isLoading, redirectToLogin } = useAuth();
+
+  async function handleSubmitWithAuth(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    
+    // Verifica autenticação antes de enviar
+    if (!isAuthenticated) {
+      redirectToLogin("/fale-conosco");
+      return;
+    }
+
+    await handleSubmit(e);
+  }
+
+  // Mostra loading enquanto verifica autenticação
+  if (isLoading) {
+    return (
+      <ArenaPageLayout
+        active="fale-conosco"
+        containerClassName="max-w-7xl"
+        isAuthenticated={isAuthenticated}
+      >
+        <div className="flex items-center justify-center min-h-96">
+          <div className="animate-pulse">
+            <p className="text-white/50">Carregando...</p>
+          </div>
+        </div>
+      </ArenaPageLayout>
+    );
+  }
+
   return (
     <ArenaPageLayout
       active="fale-conosco"
       containerClassName="max-w-7xl"
+      isAuthenticated={isAuthenticated}
       topDecoration={
         <>
           <div className="pointer-events-none fixed top-8 left-1/3 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
@@ -52,7 +87,7 @@ export default function FaleConoscoPage() {
             errors={errors}
             isSubmitting={isSubmitting}
             onFieldChange={handleFieldChange}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitWithAuth}
           />
 
           <ContactInfoCards />
