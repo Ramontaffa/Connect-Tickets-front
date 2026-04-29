@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!token) return null;
 
         return {
-          id: String(data.id ?? ""),
+          id: String(data.id ?? data.idUsuario ?? ""),
           name: data.name ?? data.username ?? null,
           email: (data.email as string) ?? (credentials.email as string),
           accessToken: token as string,

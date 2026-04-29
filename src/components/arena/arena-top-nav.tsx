@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 import { cn } from "@/lib/utils";
+import { clearSession } from "@/lib/auth-session";
 
 type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
 
@@ -28,6 +29,7 @@ const navItems = [
 
 export function ArenaTopNav({ active }: ArenaTopNavProps) {
   function handleLogout() {
+    clearSession();
     signOut({ callbackUrl: "/" });
   }
 

@@ -30,6 +30,14 @@ export type RegisterResponse = {
   email?: string;
 };
 
+export type LoginResponse = {
+  token?: string;
+  accessToken?: string;
+  username?: string;
+  name?: string;
+  email?: string;
+};
+
 export function register(data: {
   name: string;
   email: string;
@@ -39,6 +47,13 @@ export function register(data: {
   return apiFetch<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+export function loginAPI(email: string, password: string): Promise<LoginResponse> {
+  return apiFetch<LoginResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
   });
 }
 
@@ -107,4 +122,59 @@ export async function deleteEvento(id: number, token: string): Promise<void> {
     const error = await res.json().catch(() => ({}));
     throw new Error((error as { message?: string }).message ?? `Erro ${res.status}`);
   }
+}
+
+// ─── Sugestões ──────────────────────────────────────────────────────────────
+
+export interface SugestaoDTO {
+  eventName: string;
+  description: string;
+  category: EventoCategory;
+}
+
+export interface SugestaoResponseDTO {
+  idSugestao: number;
+  eventName: string;
+  description: string;
+  category: EventoCategory;
+  status: "PENDENTE" | "EM_ANALISE" | "APROVADA" | "REJEITADA";
+  creatorName: string;
+}
+
+export function createSugestao(
+  data: SugestaoDTO,
+  token?: string
+): Promise<SugestaoResponseDTO> {
+  return apiFetch<SugestaoResponseDTO>("/api/sugestoes", {
+    method: "POST",
+    body: JSON.stringify(data),
+    accessToken: token,
+  });
+}
+
+// ─── Visitas ────────────────────────────────────────────────────────────────
+
+export interface VisitaDTO {
+  scheduledAt: string; // ISO 8601 format: "2026-12-01T10:00:00"
+  requesterId: number;
+  authorizerId?: number | null;
+}
+
+export interface VisitaResponseDTO {
+  idVisita: number;
+  scheduledAt: string;
+  isAuthorized: boolean;
+  requesterName: string;
+  authorizerName: string | null;
+}
+
+export function createVisita(
+  data: VisitaDTO,
+  token: string
+): Promise<VisitaResponseDTO> {
+  return apiFetch<VisitaResponseDTO>("/api/visitas", {
+    method: "POST",
+    body: JSON.stringify(data),
+    accessToken: token,
+  });
 }

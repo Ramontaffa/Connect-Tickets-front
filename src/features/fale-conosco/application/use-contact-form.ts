@@ -2,6 +2,8 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { createSugestao, type EventoCategory, type SugestaoDTO } from "@/lib/api";
+import { getToken } from "@/lib/auth-session";
 import {
   formatPhone,
   hasRequiredFieldErrors,
@@ -45,12 +47,22 @@ export function useContactForm() {
     setIsSubmitting(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      const token = getToken();
+      
+      const sugestaoData: SugestaoDTO = {
+        eventName: formData.subject,
+        description: formData.message,
+        category: "CORPORATIVO" as EventoCategory,
+      };
+
+      await createSugestao(sugestaoData, token ?? undefined);
+      
       toast.success("Mensagem enviada com sucesso!");
       setFormData(initialContactFormData);
       setErrors({});
-    } catch {
-      toast.error("Não foi possível enviar a mensagem. Tente novamente.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erro desconhecido";
+      toast.error(`Não foi possível enviar a mensagem. ${message}`);
     } finally {
       setIsSubmitting(false);
     }
