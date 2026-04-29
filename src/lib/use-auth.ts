@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken, getUser, AuthUser } from "@/lib/auth-session";
-
-type UseAuthOptions = {
-  // Removido onUnauthenticated - verificação deve ser manual no submit
-};
+import { getToken, getUser, type AuthUser } from "@/lib/auth-session";
 
 type UseAuthReturn = {
   isAuthenticated: boolean;
@@ -15,7 +11,7 @@ type UseAuthReturn = {
   redirectToLogin: (returnPath: string) => void;
 };
 
-export function useAuth(options?: UseAuthOptions): UseAuthReturn {
+export function useAuth(): UseAuthReturn {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +31,7 @@ export function useAuth(options?: UseAuthOptions): UseAuthReturn {
     }
 
     setIsLoading(false);
-  }, [router]);
+  }, []);
 
   const redirectToLogin = (returnPath: string) => {
     const returnUrl = encodeURIComponent(returnPath);

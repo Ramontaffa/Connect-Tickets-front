@@ -33,9 +33,11 @@ export type RegisterResponse = {
 export type LoginResponse = {
   token?: string;
   accessToken?: string;
+  idUsuario?: number;
   username?: string;
   name?: string;
   email?: string;
+  role?: "USER" | "ADMIN" | string;
 };
 
 export function register(data: {

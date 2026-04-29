@@ -62,9 +62,11 @@ export default function LoginPage() {
       }
 
       saveSession(token, {
+        id: loginData.idUsuario,
         email,
-        username: email.split("@")[0],
-        name: email.split("@")[0],
+        username: loginData.username ?? email.split("@")[0],
+        name: loginData.name ?? email.split("@")[0],
+        role: loginData.role,
       });
 
       const result = await signIn("credentials", {

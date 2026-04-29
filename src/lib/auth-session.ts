@@ -3,7 +3,7 @@ export type AuthUser = {
   name?: string;
   email: string;
   username?: string;
-  roles?: string[];
+  role?: "USER" | "ADMIN" | string;
 };
 
 const TOKEN_KEY = "arena:auth-token:v1";

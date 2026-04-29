@@ -26,12 +26,12 @@ export function ArenaPageLayout({
   isAuthenticated: providedAuth,
 }: ArenaPageLayoutProps) {
   // Detecta autenticação usando hook se não foi fornecida via prop
-  const { isAuthenticated: detectedAuth } = useAuth();
+  const { isAuthenticated: detectedAuth, user } = useAuth();
   const isAuthenticated = providedAuth !== undefined ? providedAuth : detectedAuth;
 
   return (
     <div className={arenaTheme.page}>
-      <ArenaTopNav active={active} isAuthenticated={isAuthenticated} />
+      <ArenaTopNav active={active} isAuthenticated={isAuthenticated} user={user} />
       {topDecoration}
 
       <div className={cn(arenaTheme.pageContent, contentClassName)}>

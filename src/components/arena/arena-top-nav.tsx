@@ -6,13 +6,14 @@ import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { clearSession } from "@/lib/auth-session";
+import { clearSession, type AuthUser } from "@/lib/auth-session";
 
 type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
 
 type ArenaTopNavProps = {
   active: NavKey;
   isAuthenticated?: boolean;
+  user?: AuthUser | null;
 };
 
 const navItems = [
@@ -30,8 +31,9 @@ const navItems = [
   },
 ];
 
-export function ArenaTopNav({ active, isAuthenticated = false }: ArenaTopNavProps) {
+export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopNavProps) {
   const router = useRouter();
+  const isAdmin = user?.role === "ADMIN";
 
   function handleLogout() {
     clearSession();
@@ -40,6 +42,14 @@ export function ArenaTopNav({ active, isAuthenticated = false }: ArenaTopNavProp
 
   function handleLogin() {
     router.push("/login");
+  }
+
+  function goToAdmin() {
+    router.push("/admin/dashboard");
+  }
+
+  function goToUserArea() {
+    router.push("/home");
   }
 
   return (
@@ -68,18 +78,40 @@ export function ArenaTopNav({ active, isAuthenticated = false }: ArenaTopNavProp
         ))}
 
         {isAuthenticated ? (
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="ml-4 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
-          >
-            Sair
-          </button>
+          <div className="ml-4 flex items-center gap-2">
+            {isAdmin && (
+              <>
+                <Button
+                  type="button"
+                  onClick={goToAdmin}
+                  variant="outline"
+                  className="rounded-lg border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 hover:text-white"
+                >
+                  Tela admin
+                </Button>
+                <Button
+                  type="button"
+                  onClick={goToUserArea}
+                  variant="outline"
+                  className="rounded-lg border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 hover:text-white"
+                >
+                  Tela do usuário
+                </Button>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-all hover:bg-white/5 hover:text-arena-text"
+            >
+              Sair
+            </button>
+          </div>
         ) : (
           <Button
             onClick={handleLogin}
-            variant="outline"
-            className="ml-4 rounded-lg px-4 py-2 text-sm font-medium"
+            variant="default"
+            className="ml-4 rounded-lg border border-violet-500/20 bg-linear-to-r from-arena-brand-start to-arena-brand-end px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:opacity-90"
           >
             Entrar
           </Button>
