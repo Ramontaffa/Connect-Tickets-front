@@ -61,6 +61,7 @@ export function loginAPI(email: string, password: string): Promise<LoginResponse
 
 // ─── Eventos ────────────────────────────────────────────────────────────────
 
+
 export type EventoCategory = "ESPORTE" | "SHOW" | "CULTURAL" | "CORPORATIVO";
 
 export interface EventoDTO {
