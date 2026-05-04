@@ -113,6 +113,7 @@ export function useScheduleVisit() {
         scheduledAt,
         requesterId: user.id,
         authorizerId: null,
+        visitorCount: Number(formData.visitors),
       };
 
       await createVisita(visitaData, token);

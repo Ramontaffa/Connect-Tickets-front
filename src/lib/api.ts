@@ -46,14 +46,14 @@ export function register(data: {
   password: string;
   username: string;
 }) {
-  return apiFetch<RegisterResponse>("/auth/register", {
+  return apiFetch<RegisterResponse>("/api/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export function loginAPI(email: string, password: string): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>("/auth/login", {
+  return apiFetch<LoginResponse>("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
@@ -84,15 +84,15 @@ export interface EventoDTO {
 
 export function listEventos(category?: string): Promise<EventoDTO[]> {
   const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return apiFetch<EventoDTO[]>(`/eventos${query}`);
+  return apiFetch<EventoDTO[]>(`/api/eventos${query}`);
 }
 
 export function getEvento(id: number): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/eventos/${id}`);
+  return apiFetch<EventoDTO>(`/api/eventos/${id}`);
 }
 
 export function createEvento(data: EventoDTO, token: string): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>("/eventos", {
+  return apiFetch<EventoDTO>("/api/eventos", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
@@ -104,7 +104,7 @@ export function updateEvento(
   data: EventoDTO,
   token: string
 ): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/eventos/${id}`, {
+  return apiFetch<EventoDTO>(`/api/eventos/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
     accessToken: token,
@@ -112,7 +112,7 @@ export function updateEvento(
 }
 
 export async function deleteEvento(id: number, token: string): Promise<void> {
-  const res = await fetch(`${API_URL}/eventos/${id}`, {
+  const res = await fetch(`${API_URL}/api/eventos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -160,6 +160,7 @@ export interface VisitaDTO {
   scheduledAt: string; // ISO 8601 format: "2026-12-01T10:00:00"
   requesterId: number;
   authorizerId?: number | null;
+  visitorCount: number;
 }
 
 export interface VisitaResponseDTO {
@@ -168,6 +169,7 @@ export interface VisitaResponseDTO {
   isAuthorized: boolean;
   requesterName: string;
   authorizerName: string | null;
+  visitorCount: number;
 }
 
 export function createVisita(
