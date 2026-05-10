@@ -46,14 +46,14 @@ export function register(data: {
   password: string;
   username: string;
 }) {
-  return apiFetch<RegisterResponse>("/api/auth/register", {
+  return apiFetch<RegisterResponse>("auth/register", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export function loginAPI(email: string, password: string): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>("/api/auth/login", {
+  return apiFetch<LoginResponse>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
@@ -83,17 +83,25 @@ export interface EventoDTO {
   imageUrl?: string;
 }
 
-export function listEventos(category?: string): Promise<EventoDTO[]> {
+export async function listEventos(category?: string): Promise<EventoDTO[]> {
   const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return apiFetch<EventoDTO[]>(`/api/eventos${query}`);
+  const result = await apiFetch<unknown>(`/eventos${query}`);
+  if (Array.isArray(result)) return result as EventoDTO[];
+  if (result && typeof result === "object") {
+    for (const key of ["content", "data", "items", "eventos"]) {
+      const val = (result as Record<string, unknown>)[key];
+      if (Array.isArray(val)) return val as EventoDTO[];
+    }
+  }
+  return [];
 }
 
 export function getEvento(id: number): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/api/eventos/${id}`);
+  return apiFetch<EventoDTO>(`/eventos/${id}`);
 }
 
 export function createEvento(data: EventoDTO, token: string): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>("/api/eventos", {
+  return apiFetch<EventoDTO>("/eventos", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
@@ -105,7 +113,7 @@ export function updateEvento(
   data: EventoDTO,
   token: string
 ): Promise<EventoDTO> {
-  return apiFetch<EventoDTO>(`/api/eventos/${id}`, {
+  return apiFetch<EventoDTO>(`/eventos/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
     accessToken: token,
@@ -113,7 +121,7 @@ export function updateEvento(
 }
 
 export async function deleteEvento(id: number, token: string): Promise<void> {
-  const res = await fetch(`${API_URL}/api/eventos/${id}`, {
+  const res = await fetch(`${API_URL}/eventos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -177,7 +185,7 @@ export function createVisita(
   data: VisitaDTO,
   token: string
 ): Promise<VisitaResponseDTO> {
-  return apiFetch<VisitaResponseDTO>("/api/visitas", {
+  return apiFetch<VisitaResponseDTO>("/visitas", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
