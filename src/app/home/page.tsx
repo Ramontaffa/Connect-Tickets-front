@@ -18,11 +18,11 @@ function buildStats(events: EventoDTO[]) {
     totalEvents === 0
       ? 0
       : Math.round(
-          events.reduce((sum, event) => {
-            if (!event.capacity) return sum;
-            return sum + (event.expectedAttendance / event.capacity) * 100;
-          }, 0) / totalEvents
-        );
+        events.reduce((sum, event) => {
+          if (!event.capacity) return sum;
+          return sum + (event.expectedAttendance / event.capacity) * 100;
+        }, 0) / totalEvents
+      );
 
   return {
     totalEvents,
@@ -74,18 +74,18 @@ export default function HomePage() {
       {/* HERO */}
       <section className="relative pt-32 pb-24 px-8 overflow-hidden">
         {/* Background glow */}
-        <div className="absolute top-0 left-1/4 h-100 w-150 rounded-full bg-violet-600/20 blur-[120px] pointer-events-none" />
-        <div className="absolute top-20 right-1/4 h-75 w-100 rounded-full bg-fuchsia-600/15 blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 h-100 w-150 rounded-full bg-blue-600/20 blur-[120px] pointer-events-none" />
+        <div className="absolute top-20 right-1/4 h-75 w-100 rounded-full bg-blue-600/15 blur-[100px] pointer-events-none" />
 
         <div className={"relative " + arenaTheme.heroContainer}>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-medium mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-yellow-200 text-xs font-medium mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
             Plataforma oficial da Arena Pernambuco
           </div>
 
           <h1 className="text-6xl font-black tracking-tight leading-[1.05] mb-6 max-w-3xl">
             Eventos da{" "}
-            <span className="bg-linear-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-400 to-yellow-200 bg-clip-text text-transparent">
               Arena Pernambuco
             </span>
           </h1>
@@ -97,7 +97,7 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <Link
               href="/eventos"
-              className={arenaTheme.primaryButton}
+              className={arenaTheme.secondaryButton}
             >
               <CalendarDays size={16} />
               Ver Eventos
