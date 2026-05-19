@@ -140,7 +140,6 @@ export async function deleteEvento(id: number, token: string): Promise<void> {
 export interface InscricaoInputDTO {
   userId: number;
   eventId: number;
-  registrationAt?: string;
   visitorCount: number;
 }
 

@@ -61,7 +61,6 @@ export function InscricaoButton({ eventId, eventName }: InscricaoButtonProps) {
           userId: user.id,
           eventId,
           visitorCount,
-          registrationAt: new Date().toISOString(),
         },
         token
       );
