@@ -94,7 +94,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <div className="relative h-80 overflow-hidden">
             <img src={imageUrl} alt={evento.eventName} className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-transparent" />
-            <span className="absolute left-5 top-5 rounded-full bg-violet-600 px-3 py-1 text-xs font-semibold text-white">
+            <span className="absolute left-5 top-5 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
               {categoryMeta.label}
             </span>
             <div className="absolute bottom-5 left-5 right-5">
@@ -149,7 +149,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
           <div className="h-1 overflow-hidden rounded-full bg-white/10">
             <div
-              className={`h-full rounded-full ${occupancy >= 90 ? "bg-linear-to-r from-red-500 to-orange-500" : occupancy >= 75 ? "bg-linear-to-r from-amber-500 to-yellow-500" : "bg-linear-to-r from-violet-500 to-fuchsia-500"}`}
+              className={`h-full rounded-full ${occupancy >= 90 ? "bg-linear-to-r from-red-500 to-orange-500" : occupancy >= 75 ? "bg-linear-to-r from-amber-500 to-yellow-500" : "bg-linear-to-r from-blue-500 to-yellow-400"}`}
               style={{ width: `${occupancy}%` }}
             />
           </div>

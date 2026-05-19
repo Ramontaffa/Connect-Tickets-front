@@ -40,13 +40,13 @@ export default function EsqueciSenha() {
 
   return (
     <main className={arenaTheme.page + " relative flex min-h-screen items-center justify-center overflow-hidden p-4"}>
-      <div className="pointer-events-none absolute left-1/4 top-10 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-10 right-1/4 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/4 top-10 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-10 right-1/4 h-72 w-72 rounded-full bg-yellow-500/10 blur-[100px]" />
 
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-arena-border bg-arena-surface-strong">
-            <CalendarDays className="h-8 w-8 text-violet-400" />
+            <CalendarDays className="h-8 w-8 text-blue-400" />
           </div>
           <h1 className="mb-2 text-3xl font-black tracking-tight text-white">
             Arena Pernambuco

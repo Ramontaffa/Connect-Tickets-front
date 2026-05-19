@@ -99,8 +99,8 @@
   --arena-border: rgb(255 255 255 / 0.08);
   --arena-border-strong: rgb(255 255 255 / 0.1);
   --arena-nav: rgb(10 10 15 / 0.8);
-  --arena-brand-start: #7c3aed;
-  --arena-brand-end: #c026d3;
+  --arena-brand-start: #2563eb;
+  --arena-brand-end: #ca8a04;
 }
 
 .dark {
@@ -143,8 +143,8 @@
   --arena-border: rgb(255 255 255 / 0.08);
   --arena-border-strong: rgb(255 255 255 / 0.1);
   --arena-nav: rgb(10 10 15 / 0.8);
-  --arena-brand-start: #7c3aed;
-  --arena-brand-end: #c026d3;
+  --arena-brand-start: #2563eb;
+  --arena-brand-end: #ca8a04;
 }
 
 @layer base {

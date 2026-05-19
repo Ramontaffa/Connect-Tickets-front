@@ -58,7 +58,7 @@ function getOccupancyLabelClass(occupancy: number): string {
 function getOccupancyBarClass(occupancy: number): string {
   if (occupancy >= 90) return "bg-linear-to-r from-red-500 to-orange-500";
   if (occupancy >= 75) return "bg-linear-to-r from-amber-500 to-yellow-500";
-  return "bg-linear-to-r from-violet-500 to-fuchsia-500";
+  return "bg-linear-to-r from-blue-500 to-yellow-400";
 }
 
 function getEventImage(evento: EventoDTO): string {
@@ -75,7 +75,7 @@ export function EventCard({ evento, href }: EventCardProps) {
   const categoryMeta = CATEGORY_META[evento.category] ?? CATEGORY_META.ESPORTE;
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-arena-border bg-arena-surface transition-all hover:-translate-y-1 hover:border-violet-500/30">
+    <div className="group overflow-hidden rounded-2xl border border-arena-border bg-arena-surface transition-all hover:-translate-y-1 hover:border-blue-500/30">
       <div className="relative h-52 overflow-hidden">
         <img
           src={getEventImage(evento)}
@@ -116,7 +116,7 @@ export function EventCard({ evento, href }: EventCardProps) {
         </div>
         <Link
           href={href}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-violet-500/20 bg-linear-to-r from-violet-600/20 to-fuchsia-600/20 py-2.5 text-center text-sm font-semibold text-violet-300 transition-all hover:border-transparent hover:from-violet-600 hover:to-fuchsia-600 hover:text-white"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-500/20 bg-linear-to-r from-blue-600/20 to-yellow-400/20 py-2.5 text-center text-sm font-semibold text-blue-300 transition-all hover:border-transparent hover:from-blue-600 hover:to-yellow-500 hover:text-white"
         >
           Ver Detalhes
           <ArrowRight size={13} />

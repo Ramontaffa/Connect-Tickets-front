@@ -60,7 +60,7 @@ export default function EventosPage() {
     <ArenaPageLayout active="eventos">
       <div className="mb-10">
         <h1 className="mb-2 text-5xl font-black tracking-tight">
-          Todos os <span className="bg-linear-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Eventos</span>
+          Todos os <span className="bg-linear-to-r from-blue-400 to-yellow-300 bg-clip-text text-transparent">Eventos</span>
         </h1>
         <p className="text-white/40">Encontre o evento perfeito para você</p>
       </div>
@@ -84,7 +84,7 @@ export default function EventosPage() {
               key={cat}
               onClick={() => setCategory(cat)}
               className={`rounded-lg px-3 py-2 text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
-                category === cat ? "bg-violet-600 text-white" : "text-white/40 hover:text-white"
+                category === cat ? "bg-blue-600 text-white" : "text-white/40 hover:text-white"
               }`}
             >
               {cat}

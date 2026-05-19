@@ -119,10 +119,10 @@ export default function HomePage() {
           {stats.map(({ icon: Icon, value, label }) => (
             <div
               key={label}
-              className={arenaTheme.glassCard + " relative p-6 hover:border-violet-500/30 hover:bg-white/5 transition-all group"}
+              className={arenaTheme.glassCard + " relative p-6 hover:border-blue-500/30 hover:bg-white/5 transition-all group"}
             >
-              <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center mb-4 group-hover:bg-violet-500/20 transition-colors">
-                <Icon size={18} className="text-violet-400" />
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
+                <Icon size={18} className="text-blue-400" />
               </div>
               <div className="text-3xl font-black text-white mb-1">{value}</div>
               <div className="text-sm text-white/40">{label}</div>
@@ -141,7 +141,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/eventos"
-              className="flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors"
+              className="flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors"
             >
               Ver todos <ArrowRight size={14} />
             </Link>

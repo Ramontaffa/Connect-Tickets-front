@@ -16,7 +16,7 @@ export function ContactInfoCards() {
           >
             <CardContent className="flex items-start gap-5 p-7">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-arena-border bg-arena-surface-strong">
-                <Icon className="h-6 w-6 text-violet-400" />
+                <Icon className="h-6 w-6 text-blue-400" />
               </div>
 
               <div>

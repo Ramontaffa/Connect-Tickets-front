@@ -54,8 +54,8 @@ export default function FaleConoscoPage() {
       isAuthenticated={isAuthenticated}
       topDecoration={
         <>
-          <div className="pointer-events-none fixed top-8 left-1/3 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
-          <div className="pointer-events-none fixed right-12 top-24 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-[100px]" />
+          <div className="pointer-events-none fixed top-8 left-1/3 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+          <div className="pointer-events-none fixed right-12 top-24 h-72 w-72 rounded-full bg-yellow-500/10 blur-[100px]" />
         </>
       }
     >
@@ -70,7 +70,7 @@ export default function FaleConoscoPage() {
         <section className="mb-12">
           <div className="mb-4 flex items-center gap-4">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-arena-border bg-arena-surface-strong">
-              <MessageSquareText className="h-7 w-7 text-violet-400" />
+              <MessageSquareText className="h-7 w-7 text-blue-400" />
             </div>
             <h1 className="text-4xl font-black tracking-tight text-white">Fale Conosco</h1>
           </div>

@@ -58,7 +58,7 @@ export default function AgendarVisitaPage() {
       containerClassName="max-w-3xl"
       isAuthenticated={isAuthenticated}
       topDecoration={
-        <div className="fixed top-0 right-0 h-125 w-125 rounded-full bg-violet-600/10 blur-[150px] pointer-events-none" />
+        <div className="fixed top-0 right-0 h-125 w-125 rounded-full bg-blue-600/10 blur-[150px] pointer-events-none" />
       }
     >
 
@@ -70,8 +70,8 @@ export default function AgendarVisitaPage() {
 
           {/* HEADER */}
           <div className="flex items-start gap-4 mb-10">
-            <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-              <MapPin size={20} className="text-violet-400" />
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+              <MapPin size={20} className="text-blue-400" />
             </div>
             <div>
               <h1 className="text-4xl font-black tracking-tight">Agendar Visita</h1>
@@ -90,7 +90,7 @@ export default function AgendarVisitaPage() {
                   {/* Date */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-white/80 mb-2">
-                      <Calendar size={14} className="text-violet-400" />
+                      <Calendar size={14} className="text-blue-400" />
                       Data da Visita *
                     </label>
                     <input
@@ -108,7 +108,7 @@ export default function AgendarVisitaPage() {
                   {/* Time */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-white/80 mb-2">
-                      <Clock size={14} className="text-violet-400" />
+                      <Clock size={14} className="text-blue-400" />
                       Horário *
                     </label>
                     <div className="grid grid-cols-6 gap-2">
@@ -119,7 +119,7 @@ export default function AgendarVisitaPage() {
                           onClick={() => handleFieldChange("time", slot)}
                           className={`py-2.5 rounded-xl text-sm font-medium transition-all border ${
                             formData.time === slot
-                              ? "bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20"
+                              ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20"
                               : "bg-white/3 border-white/10 text-white/50 hover:text-white hover:border-white/20"
                           }`}
                         >
@@ -133,7 +133,7 @@ export default function AgendarVisitaPage() {
                   {/* Visitors */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-white/80 mb-2">
-                      <Users size={14} className="text-violet-400" />
+                      <Users size={14} className="text-blue-400" />
                       Número de Visitantes *
                     </label>
                     <input
@@ -173,7 +173,7 @@ export default function AgendarVisitaPage() {
               {/* INFO CARD */}
               <div className={arenaTheme.glassCard + " p-6"}>
                 <div className="flex items-center gap-2 mb-4">
-                  <Info size={15} className="text-violet-400" />
+                  <Info size={15} className="text-blue-400" />
                   <h3 className="text-sm font-semibold text-white/80">Informações sobre a visita</h3>
                 </div>
                 <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function AgendarVisitaPage() {
                     "Traga documento de identificação",
                   ].map((info) => (
                     <div key={info} className="flex items-start gap-2.5 text-sm text-white/50">
-                      <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-violet-500" />
+                      <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-blue-500" />
                       {info}
                     </div>
                   ))}
@@ -198,20 +198,20 @@ export default function AgendarVisitaPage() {
                 <p className="text-sm text-white/40 mb-4">Entre em contato conosco:</p>
                 <div className="space-y-3">
                   <a href="tel:81300000000" className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 transition-colors group">
-                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-violet-500/10 transition-colors">
-                      <Phone size={13} className="text-violet-400" />
+                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors">
+                      <Phone size={13} className="text-blue-400" />
                     </div>
                     (81) 3000-0000
                   </a>
                   <a href="mailto:visitas@arenapernambuco.com.br" className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 transition-colors group">
-                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-violet-500/10 transition-colors">
-                      <Mail size={13} className="text-violet-400" />
+                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors">
+                      <Mail size={13} className="text-blue-400" />
                     </div>
                     visitas@arenapernambuco.com.br
                   </a>
                   <a href="https://wa.me/5581999999999" className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 transition-colors group">
-                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-violet-500/10 transition-colors">
-                      <MessageCircle size={13} className="text-violet-400" />
+                    <div className="w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors">
+                      <MessageCircle size={13} className="text-blue-400" />
                     </div>
                     WhatsApp: (81) 99999-9999
                   </a>
@@ -245,7 +245,7 @@ export default function AgendarVisitaPage() {
               <p className="text-white/30 text-xs mb-8">Você receberá um email de confirmação em breve.</p>
               <Link
                 href="/home"
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-linear-to-r from-violet-600 to-fuchsia-600 text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-linear-to-r from-blue-600 to-yellow-500 text-white font-semibold text-sm hover:opacity-90 transition-opacity"
               >
                 Voltar ao Início
               </Link>

@@ -137,7 +137,7 @@ export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopN
           <Button
             onClick={handleLogin}
             variant="default"
-            className="ml-4 rounded-lg border border-violet-500/20 bg-linear-to-r from-arena-brand-start to-arena-brand-end px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:opacity-90"
+            className="ml-4 rounded-lg border border-blue-500/20 bg-linear-to-r from-arena-brand-start to-arena-brand-end px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:opacity-90"
           >
             Entrar
           </Button>
