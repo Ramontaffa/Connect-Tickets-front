@@ -146,6 +146,7 @@ export interface InscricaoInputDTO {
 export interface InscricaoResponseDTO {
   idInscricao: number;
   userName: string;
+  idEvento: number;
   eventName: string;
   registrationAt: string;
   visitorCount: number;
@@ -160,6 +161,10 @@ export function createInscricao(
     body: JSON.stringify(data),
     accessToken: token,
   });
+}
+
+export function listMinhasInscricoes(token: string): Promise<InscricaoResponseDTO[]> {
+  return apiFetch<InscricaoResponseDTO[]>("/api/inscricoes/me", { accessToken: token });
 }
 
 // ─── Sugestões ──────────────────────────────────────────────────────────────
