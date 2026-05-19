@@ -135,6 +135,34 @@ export async function deleteEvento(id: number, token: string): Promise<void> {
   }
 }
 
+// ─── Inscrições ─────────────────────────────────────────────────────────────
+
+export interface InscricaoInputDTO {
+  userId: number;
+  eventId: number;
+  registrationAt?: string;
+  visitorCount: number;
+}
+
+export interface InscricaoResponseDTO {
+  idInscricao: number;
+  userName: string;
+  eventName: string;
+  registrationAt: string;
+  visitorCount: number;
+}
+
+export function createInscricao(
+  data: InscricaoInputDTO,
+  token: string
+): Promise<InscricaoResponseDTO> {
+  return apiFetch<InscricaoResponseDTO>("/api/inscricoes", {
+    method: "POST",
+    body: JSON.stringify(data),
+    accessToken: token,
+  });
+}
+
 // ─── Sugestões ──────────────────────────────────────────────────────────────
 
 export interface SugestaoDTO {

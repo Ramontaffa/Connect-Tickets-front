@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Clock, MapPin, Users, Ticket, DollarSign } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
+import { InscricaoButton } from "@/components/inscricao-button";
 import { listEventos, getEvento } from "@/lib/api";
 
 const CATEGORY_META: Record<string, { label: string; fallbackImage: string }> = {
@@ -170,9 +171,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             </div>
           </div>
 
+          <InscricaoButton eventId={eventId} eventName={evento.eventName} />
+
           <Link
             href="/fale-conosco"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-violet-600 to-fuchsia-600 px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-6 py-3 text-sm font-semibold text-white/60 transition-colors hover:text-white hover:bg-white/10"
           >
             Fale conosco sobre este evento
           </Link>
