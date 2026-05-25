@@ -76,8 +76,7 @@ export default function FaleConoscoPage() {
           </div>
 
           <p className={arenaTheme.mutedText + " max-w-4xl text-base md:text-lg"}>
-            Entre em contato conosco. Estamos aqui para ajudar e responder suas
-            dúvidas.
+            Use este espaço para enviar sugestões, dúvidas ou comentários. Estamos aqui para ouvir você.
           </p>
         </section>
 
