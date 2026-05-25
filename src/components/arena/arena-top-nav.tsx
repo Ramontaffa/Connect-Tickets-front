@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { clearSession, type AuthUser } from "@/lib/auth-session";
 
-type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita";
+type NavKey = "home" | "eventos" | "fale-conosco" | "agendar-visita" | "minhas-inscricoes";
 
 type ArenaTopNavProps = {
   active: NavKey;
@@ -107,6 +107,12 @@ export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopN
                     onClick={() => { setMenuOpen(false); goToUserArea(); }}
                   >
                     Tela do usuário
+                  </button>
+                  <button
+                    className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"
+                    onClick={() => { setMenuOpen(false); router.push("/minhas-inscricoes"); }}
+                  >
+                    Minhas inscrições
                   </button>
                   <button
                     className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"

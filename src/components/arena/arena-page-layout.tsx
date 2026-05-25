@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/use-auth";
 
 type ArenaPageLayoutProps = {
-  active: "home" | "eventos" | "fale-conosco" | "agendar-visita";
+  active: "home" | "eventos" | "fale-conosco" | "agendar-visita" | "minhas-inscricoes";
   children: ReactNode;
   contentClassName?: string;
   containerClassName?: string;
