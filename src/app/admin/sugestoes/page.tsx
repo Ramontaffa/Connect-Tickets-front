@@ -77,7 +77,6 @@ export default function AdminSugestoesPage() {
   const { data: session, status } = useSession();
   const [sugestoes, setSugestoes] = useState<SugestaoResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<SuggestionFilter>("TODAS");
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -89,18 +88,13 @@ export default function AdminSugestoesPage() {
     if (!token) {
       if (status === "loading") return;
       setLoading(false);
-      setError("Voce precisa estar autenticado para visualizar sugestoes.");
       return;
     }
 
     setLoading(true);
-    setError(null);
     listSugestoes(token)
       .then((data) => setSugestoes(data))
-      .catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : "Erro ao carregar sugestoes";
-        setError(msg);
-      })
+      .catch(() => setSugestoes([]))
       .finally(() => setLoading(false));
   }, [session?.accessToken, status]);
 
@@ -152,7 +146,6 @@ export default function AdminSugestoesPage() {
 
     const token = session?.accessToken;
     if (!token) {
-      setError("Voce precisa estar autenticado para excluir sugestoes.");
       setSugestaoParaExcluir(null);
       return;
     }
@@ -165,9 +158,8 @@ export default function AdminSugestoesPage() {
       setSugestoes((prev) =>
         prev.filter((item) => item.idSugestao !== sugestaoParaExcluir.idSugestao)
       );
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Erro ao excluir sugestao.";
-      setError(msg);
+    } catch {
+      return;
     } finally {
       setDeletingId(null);
     }
@@ -244,12 +236,6 @@ export default function AdminSugestoesPage() {
           Cadastrar Evento
         </Link>
       </div>
-
-      {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
-      )}
 
       {loading ? (
         <>
