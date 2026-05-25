@@ -156,7 +156,7 @@ export function createInscricao(
   data: InscricaoInputDTO,
   token: string
 ): Promise<InscricaoResponseDTO> {
-  return apiFetch<InscricaoResponseDTO>("/api/inscricoes", {
+  return apiFetch<InscricaoResponseDTO>("/inscricoes", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
@@ -164,7 +164,7 @@ export function createInscricao(
 }
 
 export function listMinhasInscricoes(token: string): Promise<InscricaoResponseDTO[]> {
-  return apiFetch<InscricaoResponseDTO[]>("/api/inscricoes/me", { accessToken: token });
+  return apiFetch<InscricaoResponseDTO[]>("/inscricoes/me", { accessToken: token });
 }
 
 // ─── Sugestões ──────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ export function createSugestao(
   data: SugestaoDTO,
   token?: string
 ): Promise<SugestaoResponseDTO> {
-  return apiFetch<SugestaoResponseDTO>("/api/sugestoes", {
+  return apiFetch<SugestaoResponseDTO>("/sugestoes", {
     method: "POST",
     body: JSON.stringify(data),
     accessToken: token,
@@ -196,7 +196,7 @@ export function createSugestao(
 }
 
 export async function listSugestoes(token?: string): Promise<SugestaoResponseDTO[]> {
-  const result = await apiFetch<unknown>("/api/sugestoes", { accessToken: token });
+  const result = await apiFetch<unknown>("/sugestoes", { accessToken: token });
   if (Array.isArray(result)) return result as SugestaoResponseDTO[];
   if (result && typeof result === "object") {
     for (const key of ["content", "data", "items", "sugestoes"]) {
@@ -208,7 +208,7 @@ export async function listSugestoes(token?: string): Promise<SugestaoResponseDTO
 }
 
 export async function deleteSugestao(id: number, token: string): Promise<void> {
-  const res = await fetch(`${API_URL}/api/sugestoes/${id}`, {
+  const res = await fetch(`${API_URL}/sugestoes/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
