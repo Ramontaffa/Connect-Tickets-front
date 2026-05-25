@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
+import { Search, SlidersHorizontal, Ticket } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { EventCard } from "@/components/event-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { arenaTheme } from "@/lib/arena-theme";
+import { useAuth } from "@/lib/use-auth";
 import { listEventos, type EventoDTO } from "@/lib/api";
 
 const CATEGORIES = ["Todos", "Esporte", "Cultural", "Show", "Corporativo"];
@@ -25,6 +27,7 @@ function formatCategory(category: EventoDTO["category"]): string {
 }
 
 export default function EventosPage() {
+  const { isAuthenticated } = useAuth();
   const [events, setEvents] = useState<EventoDTO[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
@@ -58,11 +61,23 @@ export default function EventosPage() {
 
   return (
     <ArenaPageLayout active="eventos">
-      <div className="mb-10">
-        <h1 className="mb-2 text-5xl font-black tracking-tight">
-          Todos os <span className="bg-linear-to-r from-blue-400 to-yellow-300 bg-clip-text text-transparent">Eventos</span>
-        </h1>
-        <p className="text-white/40">Encontre o evento perfeito para você</p>
+      <div className="mb-10 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="mb-2 text-5xl font-black tracking-tight">
+            Todos os <span className="bg-linear-to-r from-blue-400 to-yellow-300 bg-clip-text text-transparent">Eventos</span>
+          </h1>
+          <p className="text-white/40">Encontre o evento perfeito para você</p>
+        </div>
+
+        {isAuthenticated && (
+          <Link
+            href="/minhas-inscricoes"
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white"
+          >
+            <Ticket size={15} />
+            Minhas inscrições
+          </Link>
+        )}
       </div>
 
       <div className="mb-8 flex items-center gap-3">
@@ -95,7 +110,7 @@ export default function EventosPage() {
         <select
           value={order}
           onChange={(e) => setOrder(e.target.value)}
-          className={arenaTheme.input + " w-36 shrink-0 cursor-pointer appearance-none"}
+          className={arenaTheme.input + " w-28 shrink-0 cursor-pointer appearance-none"}
         >
           {ORDER_OPTIONS.map((opt) => (
             <option key={opt} value={opt} className="bg-[#0a0a0f]">

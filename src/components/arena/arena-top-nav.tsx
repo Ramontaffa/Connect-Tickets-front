@@ -110,12 +110,6 @@ export function ArenaTopNav({ active, isAuthenticated = false, user }: ArenaTopN
                   </button>
                   <button
                     className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"
-                    onClick={() => { setMenuOpen(false); router.push("/minhas-inscricoes"); }}
-                  >
-                    Minhas inscrições
-                  </button>
-                  <button
-                    className="block w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/5"
                     onClick={() => {
                       setMenuOpen(false);
                       if (!isAdmin) {
