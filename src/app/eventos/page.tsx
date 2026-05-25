@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, SlidersHorizontal, Ticket } from "lucide-react";
+import { ArrowUpDown, Search, SlidersHorizontal, Ticket } from "lucide-react";
 
 import { ArenaPageLayout } from "@/components/arena/arena-page-layout";
 import { EventCard } from "@/components/event-card";
@@ -107,11 +107,13 @@ export default function EventosPage() {
           ))}
         </div>
 
-        <select
-          value={order}
-          onChange={(e) => setOrder(e.target.value)}
-          className={arenaTheme.input + " w-auto shrink-0 cursor-pointer appearance-none"} style={{ maxWidth: "120px" }}
-        >
+        <div className="relative shrink-0">
+          <ArrowUpDown size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <select
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
+            className={arenaTheme.input + " w-auto cursor-pointer appearance-none pl-9"}
+          >
           {ORDER_OPTIONS.map((opt) => (
             <option key={opt} value={opt} className="bg-[#0a0a0f]">
               {opt}
