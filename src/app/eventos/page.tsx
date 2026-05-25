@@ -110,7 +110,7 @@ export default function EventosPage() {
         <select
           value={order}
           onChange={(e) => setOrder(e.target.value)}
-          className={arenaTheme.input + " w-28 shrink-0 cursor-pointer appearance-none"}
+          className={arenaTheme.input + " w-auto shrink-0 cursor-pointer appearance-none"} style={{ maxWidth: "120px" }}
         >
           {ORDER_OPTIONS.map((opt) => (
             <option key={opt} value={opt} className="bg-[#0a0a0f]">
