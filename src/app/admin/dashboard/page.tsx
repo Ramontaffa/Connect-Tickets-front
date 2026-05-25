@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
           Gerenciar Eventos
         </Link>
         <Link
-          href="#"
+          href="/admin/sugestoes"
           className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-4 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50"
         >
           <MessageSquare size={16} />
