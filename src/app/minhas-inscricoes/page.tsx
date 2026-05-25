@@ -113,13 +113,15 @@ export default function MinhasInscricoesPage() {
                 </div>
               </div>
 
-              <Link
-                href={`/eventos/${inscricao.idEvento}`}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-white/50 hover:bg-white/5 hover:text-white transition-all"
-              >
-                Ver evento
-                <ArrowRight size={12} />
-              </Link>
+              {inscricao.idEvento != null && (
+                <Link
+                  href={`/eventos/${inscricao.idEvento}`}
+                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-white/50 hover:bg-white/5 hover:text-white transition-all"
+                >
+                  Ver evento
+                  <ArrowRight size={12} />
+                </Link>
+              )}
             </div>
           ))}
         </div>

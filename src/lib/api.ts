@@ -146,7 +146,7 @@ export interface InscricaoInputDTO {
 export interface InscricaoResponseDTO {
   idInscricao: number;
   userName: string;
-  idEvento: number;
+  idEvento?: number;
   eventName: string;
   registrationAt: string;
   visitorCount: number;
