@@ -180,7 +180,7 @@ export interface SugestaoResponseDTO {
   eventName: string;
   description: string;
   category: EventoCategory;
-  status: "PENDENTE" | "EM_ANALISE" | "APROVADA" | "REJEITADA";
+  status: "PENDENTE" | "APROVADA" | "IGNORADA" | "EM_ANALISE" | "REJEITADA";
   creatorName: string;
 }
 
@@ -193,6 +193,33 @@ export function createSugestao(
     body: JSON.stringify(data),
     accessToken: token,
   });
+}
+
+export async function listSugestoes(token?: string): Promise<SugestaoResponseDTO[]> {
+  const result = await apiFetch<unknown>("/api/sugestoes", { accessToken: token });
+  if (Array.isArray(result)) return result as SugestaoResponseDTO[];
+  if (result && typeof result === "object") {
+    for (const key of ["content", "data", "items", "sugestoes"]) {
+      const val = (result as Record<string, unknown>)[key];
+      if (Array.isArray(val)) return val as SugestaoResponseDTO[];
+    }
+  }
+  return [];
+}
+
+export async function deleteSugestao(id: number, token: string): Promise<void> {
+  const res = await fetch(`${API_URL}/api/sugestoes/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error((error as { message?: string }).message ?? `Erro ${res.status}`);
+  }
 }
 
 // ─── Visitas ────────────────────────────────────────────────────────────────
