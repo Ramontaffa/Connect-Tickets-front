@@ -15,22 +15,25 @@ const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
 export default function AgendarVisitaPage() {
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false);
+  const [confirmedData, setConfirmedData] = useState({ date: "", time: "", visitors: "" });
   const { formData, errors, isSubmitting, handleFieldChange, handleSubmit: submitForm, resetForm } = useScheduleVisit();
-  
+
   // Hook para verificação manual de autenticação
   const { isAuthenticated, isLoading, redirectToLogin } = useAuth();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     // Verifica autenticação antes de enviar
     if (!isAuthenticated) {
       redirectToLogin("/agendar-visita");
       return;
     }
 
+    const snapshot = { date: formData.date, time: formData.time, visitors: formData.visitors };
     const success = await submitForm(e as React.FormEvent<HTMLFormElement>);
     if (success) {
+      setConfirmedData(snapshot);
       setSubmitted(true);
     }
   }
@@ -229,17 +232,17 @@ export default function AgendarVisitaPage() {
               <div className="flex items-center justify-center gap-6 mt-4 mb-8">
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Data</p>
-                  <p className="font-bold text-white">{formData.date}</p>
+                  <p className="font-bold text-white">{confirmedData.date}</p>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Horário</p>
-                  <p className="font-bold text-white">{formData.time}</p>
+                  <p className="font-bold text-white">{confirmedData.time}</p>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div className="text-center">
                   <p className="text-xs text-white/30 mb-1">Visitantes</p>
-                  <p className="font-bold text-white">{formData.visitors} pessoa{parseInt(formData.visitors) !== 1 ? "s" : ""}</p>
+                  <p className="font-bold text-white">{confirmedData.visitors} pessoa{parseInt(confirmedData.visitors) !== 1 ? "s" : ""}</p>
                 </div>
               </div>
               <p className="text-white/30 text-xs mb-8">Você receberá um email de confirmação em breve.</p>
