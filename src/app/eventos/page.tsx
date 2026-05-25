@@ -119,7 +119,8 @@ export default function EventosPage() {
               {opt}
             </option>
           ))}
-        </select>
+          </select>
+        </div>
       </div>
 
       <p className="mb-6 text-sm text-white/30">
