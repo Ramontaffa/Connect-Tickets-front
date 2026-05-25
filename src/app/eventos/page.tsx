@@ -65,33 +65,19 @@ export default function EventosPage() {
         <p className="text-white/40">Encontre o evento perfeito para você</p>
       </div>
 
-      <div className="mb-8 flex flex-col gap-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
-            <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
-            <input
-              type="text"
-              placeholder="Buscar evento..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className={"pl-10 " + arenaTheme.input}
-            />
-          </div>
-
-          <select
-            value={order}
-            onChange={(e) => setOrder(e.target.value)}
-            className={arenaTheme.input + " w-full cursor-pointer appearance-none sm:w-44"}
-          >
-            {ORDER_OPTIONS.map((opt) => (
-              <option key={opt} value={opt} className="bg-[#0a0a0f]">
-                {opt}
-              </option>
-            ))}
-          </select>
+      <div className="mb-8 flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            type="text"
+            placeholder="Buscar evento..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={"pl-10 " + arenaTheme.input}
+          />
         </div>
 
-        <div className="flex items-center gap-1 overflow-x-auto rounded-xl border border-white/8 bg-white/3 p-1">
+        <div className="flex shrink-0 items-center gap-1 rounded-xl border border-white/8 bg-white/3 p-1">
           <SlidersHorizontal size={13} className="ml-2 shrink-0 text-white/30" />
           {CATEGORIES.map((cat) => (
             <button
@@ -105,6 +91,18 @@ export default function EventosPage() {
             </button>
           ))}
         </div>
+
+        <select
+          value={order}
+          onChange={(e) => setOrder(e.target.value)}
+          className={arenaTheme.input + " w-36 shrink-0 cursor-pointer appearance-none"}
+        >
+          {ORDER_OPTIONS.map((opt) => (
+            <option key={opt} value={opt} className="bg-[#0a0a0f]">
+              {opt}
+            </option>
+          ))}
+        </select>
       </div>
 
       <p className="mb-6 text-sm text-white/30">
